@@ -32,7 +32,7 @@ public @interface Parameter {
      * Specifies whether this parameter must be present in the
      * {@link PageParameters} list.
      */
-    boolean optional() default true;
+    boolean optional() default false;
 
     /**
      * Identifies the name of the parameter. This is the string to used used as

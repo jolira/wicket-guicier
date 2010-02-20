@@ -51,8 +51,8 @@ final class PageConstructor {
             }
         }
 
-        final GuicierPageParameters gpp = injector
-                .getInstance(GuicierPageParameters.class);
+        final Guicier gpp = injector
+                .getInstance(Guicier.class);
 
         return new PageConstructor(gpp, paramCount == 0,
                 injectAnnotationPresent, params, providers, _isParametersOnly,
@@ -95,9 +95,9 @@ final class PageConstructor {
 
     private final Class<?>[] parameterTypes;
 
-    private final GuicierPageParameters gpp;
+    private final Guicier gpp;
 
-    private PageConstructor(final GuicierPageParameters gpp,
+    private PageConstructor(final Guicier gpp,
             final boolean isDefault, final boolean isInjected,
             final Parameter[] params, final Provider<?>[] providers,
             final boolean isParametersOnly,
@@ -176,7 +176,7 @@ final class PageConstructor {
                 final Parameter param = params[idx];
 
                 args[idx] = gpp
-                        .getValue(parameters, param, parameterTypes[idx]);
+                        .get(parameters, param, parameterTypes[idx]);
             }
         }
 

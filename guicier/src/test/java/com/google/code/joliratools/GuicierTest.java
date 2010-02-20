@@ -10,20 +10,23 @@ import static org.junit.Assert.assertSame;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.util.convert.IConverter;
 import org.junit.Test;
 
-import com.google.code.joliratools.GuicierPageParameters.StringConverter;
+import com.google.code.joliratools.Guicier.StringConverter;
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 /**
  * @author jfk
  * 
  */
-public class GuicierPageParametersTest {
+public class GuicierTest {
     private static class ParameterMock implements Parameter {
         private final String value;
         private final boolean optional;
@@ -61,119 +64,131 @@ public class GuicierPageParametersTest {
         }
     }
 
+    public static class TestObject {
+        @Inject
+        public TestObject(@Parameter("x") final int x,
+                @SuppressWarnings("unused") final Object unused,
+                @Parameter(value = "y", optional = true) final int y,
+                @Nullable @Parameter("z") final String z) {
+            assertEquals(1, x);
+            assertEquals(2, y);
+            assertEquals("3", z);
+        }
+    }
+
     /**
-     * Test method for
-     * {@link GuicierPageParameters#getValue(PageParameters, Parameter, Class)}.
+     * Test method for {@link Guicier#get(PageParameters, Parameter, Class)}.
      */
     @Test
     public void testGetPageParameters() {
         final Injector injector = Guice.createInjector();
-        final GuicierPageParameters params = injector
-                .getInstance(GuicierPageParameters.class);
+        final Guicier guicier = injector.getInstance(Guicier.class);
         final Parameter param = new ParameterMock("company");
         final PageParameters parameters = new PageParameters();
 
         parameters.put("company", "jolira");
 
-        final PageParameters value = params.getValue(parameters, param,
+        final PageParameters value = guicier.get(parameters, param,
                 PageParameters.class);
 
         assertEquals(parameters, value);
     }
 
+    @Test
+    public void testGetParameters() {
+        final Injector injector = Guice.createInjector();
+        final Guicier guicier = injector.getInstance(Guicier.class);
+        @SuppressWarnings("boxing")
+        final PageParameters params = guicier.get(TestObject.class, 1, 2, "3");
+
+        assertEquals(3, params.size());
+        assertEquals("1", params.get("x"));
+        assertEquals("2", params.get("y"));
+        assertEquals("3", params.get("z"));
+    }
+
     /**
-     * Test method for
-     * {@link GuicierPageParameters#getValue(PageParameters, Parameter, Class)}.
+     * Test method for {@link Guicier#get(PageParameters, Parameter, Class)}.
      */
     @Test(expected = WicketRuntimeException.class)
     public void testNoConverter() {
         final Injector injector = Guice.createInjector();
-        final GuicierPageParameters params = injector
-                .getInstance(GuicierPageParameters.class);
+        final Guicier guicier = injector.getInstance(Guicier.class);
         final Parameter param = new ParameterMock("company");
         final PageParameters parameters = new PageParameters();
 
         parameters.put("company", "jolira");
 
-        final Object value = params.getValue(parameters, param, Map.class);
+        final Object value = guicier.get(parameters, param, Map.class);
 
         assertSame(parameters, value);
     }
 
     /**
-     * Test method for
-     * {@link GuicierPageParameters#getValue(PageParameters, Parameter, Class)}.
+     * Test method for {@link Guicier#get(PageParameters, Parameter, Class)}.
      */
     @Test
     public void testSpecificConverter() {
         final Injector injector = Guice.createInjector();
-        final GuicierPageParameters params = injector
-                .getInstance(GuicierPageParameters.class);
+        final Guicier guicier = injector.getInstance(Guicier.class);
         final Parameter param = new ParameterMock("company", false,
                 StringConverter.class);
         final PageParameters parameters = new PageParameters();
 
         parameters.put("company", "jolira");
 
-        final Object value = params.getValue(parameters, param, String.class);
+        final Object value = guicier.get(parameters, param, String.class);
 
         assertEquals("jolira", value);
     }
 
     /**
-     * Test method for
-     * {@link GuicierPageParameters#getValue(PageParameters, Parameter, Class)}.
+     * Test method for {@link Guicier#get(PageParameters, Parameter, Class)}.
      */
     @Test
     public void testStringArray0GetValue() {
         final Injector injector = Guice.createInjector();
-        final GuicierPageParameters params = injector
-                .getInstance(GuicierPageParameters.class);
+        final Guicier guicier = injector.getInstance(Guicier.class);
         final Parameter param = new ParameterMock("company");
         final PageParameters parameters = new PageParameters();
 
         parameters.put("company", new String[0]);
 
-        final Object value = params.getValue(parameters, param, String.class);
+        final Object value = guicier.get(parameters, param, String.class);
 
         assertNull(value);
     }
 
     /**
-     * Test method for
-     * {@link GuicierPageParameters#getValue(PageParameters, Parameter, Class)}.
+     * Test method for {@link Guicier#get(PageParameters, Parameter, Class)}.
      */
     @Test
     public void testStringArray1GetValue() {
         final Injector injector = Guice.createInjector();
-        final GuicierPageParameters params = injector
-                .getInstance(GuicierPageParameters.class);
+        final Guicier guicier = injector.getInstance(Guicier.class);
         final Parameter param = new ParameterMock("value");
         final PageParameters parameters = new PageParameters();
 
         parameters.put("value", new String[] { "jolira" });
 
-        final String value = params.getValue(parameters, param, String.class);
+        final String value = guicier.get(parameters, param, String.class);
 
         assertEquals("jolira", value);
     }
 
     /**
-     * Test method for
-     * {@link GuicierPageParameters#getValue(PageParameters, Parameter, Class)}.
+     * Test method for {@link Guicier#get(PageParameters, Parameter, Class)}.
      */
     @Test
     public void testStringArray3GetValue() {
         final Injector injector = Guice.createInjector();
-        final GuicierPageParameters params = injector
-                .getInstance(GuicierPageParameters.class);
+        final Guicier guicier = injector.getInstance(Guicier.class);
         final Parameter param = new ParameterMock("company");
         final PageParameters parameters = new PageParameters();
 
         parameters.put("company", new String[] { "1", "2", "3" });
 
-        final String[] value = params.getValue(parameters, param,
-                String[].class);
+        final String[] value = guicier.get(parameters, param, String[].class);
 
         assertEquals(3, value.length);
         assertEquals("1", value[0]);
@@ -182,36 +197,32 @@ public class GuicierPageParametersTest {
     }
 
     /**
-     * Test method for
-     * {@link GuicierPageParameters#getValue(PageParameters, Parameter, Class)}.
+     * Test method for {@link Guicier#get(PageParameters, Parameter, Class)}.
      */
     @Test
     public void testStringGetNullValue() {
         final Injector injector = Guice.createInjector();
-        final GuicierPageParameters params = injector
-                .getInstance(GuicierPageParameters.class);
+        final Guicier guicier = injector.getInstance(Guicier.class);
         final Parameter param = new ParameterMock("company");
         final PageParameters parameters = new PageParameters();
-        final Object value = params.getValue(parameters, param, String.class);
+        final Object value = guicier.get(parameters, param, String.class);
 
         assertNull(value);
     }
 
     /**
-     * Test method for
-     * {@link GuicierPageParameters#getValue(PageParameters, Parameter, Class)}.
+     * Test method for {@link Guicier#get(PageParameters, Parameter, Class)}.
      */
     @Test
     public void testStringGetValue() {
         final Injector injector = Guice.createInjector();
-        final GuicierPageParameters params = injector
-                .getInstance(GuicierPageParameters.class);
+        final Guicier guicier = injector.getInstance(Guicier.class);
         final Parameter param = new ParameterMock("company");
         final PageParameters parameters = new PageParameters();
 
         parameters.put("company", "jolira");
 
-        final Object value = params.getValue(parameters, param, String.class);
+        final Object value = guicier.get(parameters, param, String.class);
 
         assertEquals("jolira", value);
     }
