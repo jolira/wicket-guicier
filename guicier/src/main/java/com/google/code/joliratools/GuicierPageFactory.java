@@ -10,17 +10,20 @@ import org.apache.wicket.IPageFactory;
 import org.apache.wicket.Page;
 import org.apache.wicket.PageParameters;
 
+import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Singleton;
 
 /**
  * @author jfk
  * 
  */
+@Singleton
 public class GuicierPageFactory implements IPageFactory {
-    private final static class PageCreatorProxy implements PageCreator {
+    private final static class PageCreatorProxy implements PageMaker {
         private final Injector injector;
         private final Class<? extends Page> pageClass;
-        private PageCreator delegate = null;
+        private PageMaker delegate = null;
 
         <C extends Page> PageCreatorProxy(final Injector injector,
                 final Class<C> pageClass) {
@@ -30,12 +33,12 @@ public class GuicierPageFactory implements IPageFactory {
 
         @Override
         public Page create(final PageParameters parameters) {
-            final PageCreator _delegate = getDelegate();
+            final PageMaker _delegate = getDelegate();
 
             return _delegate.create(parameters);
         }
 
-        private synchronized PageCreator getDelegate() {
+        private synchronized PageMaker getDelegate() {
             if (delegate != null) {
                 return delegate;
             }
@@ -46,7 +49,7 @@ public class GuicierPageFactory implements IPageFactory {
     }
 
     private final Injector injector;
-    private final Map<Class<? extends Page>, PageCreator> creatorCache = new WeakHashMap<Class<? extends Page>, PageCreator>();
+    private final Map<Class<? extends Page>, PageMaker> makerCache = new WeakHashMap<Class<? extends Page>, PageMaker>();
 
     /**
      * Create a new factory.
@@ -55,6 +58,7 @@ public class GuicierPageFactory implements IPageFactory {
      *            the injector to be used to create new pages.
      * 
      */
+    @Inject
     public GuicierPageFactory(final Injector injector) {
         if (injector == null) {
             throw new IllegalArgumentException();
@@ -63,17 +67,17 @@ public class GuicierPageFactory implements IPageFactory {
         this.injector = injector;
     }
 
-    private synchronized <C extends Page> PageCreator getCreator(
+    private synchronized <C extends Page> PageMaker getCreator(
             final Class<C> pageClass) {
-        final PageCreator creator = creatorCache.get(pageClass);
+        final PageMaker creator = makerCache.get(pageClass);
 
         if (creator != null) {
             return creator;
         }
 
-        final PageCreator _creator = new PageCreatorProxy(injector, pageClass);
+        final PageMaker _creator = new PageCreatorProxy(injector, pageClass);
 
-        creatorCache.put(pageClass, _creator);
+        makerCache.put(pageClass, _creator);
 
         return _creator;
     }
@@ -93,7 +97,7 @@ public class GuicierPageFactory implements IPageFactory {
     @Override
     public <C extends Page> Page newPage(final Class<C> pageClass,
             final PageParameters parameters) {
-        final PageCreator creator = getCreator(pageClass);
+        final PageMaker creator = getCreator(pageClass);
 
         return creator.create(parameters);
     }

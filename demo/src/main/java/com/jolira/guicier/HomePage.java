@@ -11,7 +11,7 @@ public class HomePage extends WebPage {
     public HomePage() {
         final PageParameters params = new PageParameters();
 
-        params.put("name", "jolira");
+        params.put("offset", "15");
 
         add(new BookmarkablePageLink<Void>("link", DemoPage.class, params));
     }

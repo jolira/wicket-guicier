@@ -10,7 +10,7 @@ import org.apache.wicket.WicketRuntimeException;
 
 import com.google.inject.Injector;
 
-final class PageCreatorImpl implements PageCreator {
+final class PageCreatorImpl implements PageMaker {
     private final PageConstructor defaultConstructor;
     private final PageConstructor paramsOnlyConstructor;
     private final PageConstructor[] annotatedConstructors;
