@@ -68,12 +68,33 @@ public class GuicierTest {
         @Inject
         public TestObject(@Parameter("x") final int x,
                 @SuppressWarnings("unused") final Object unused,
-                @Parameter(value = "y", optional = true) final int y,
+                @Parameter(value = "y", optional = true) final long y,
                 @Nullable @Parameter("z") final String z) {
             assertEquals(1, x);
             assertEquals(2, y);
             assertEquals("3", z);
         }
+    }
+
+    public static class TestObject2 {
+        @Inject
+        public TestObject2(@Parameter("x") final float x,
+                @Parameter(value = "y", optional = true) final double y,
+                @Parameter(value = "z", optional = true) final String z) {
+            assertEquals(1, x, 0.0);
+            assertEquals(0, y, 0.0);
+            assertNull(z);
+        }
+    }
+
+    @Test
+    public void testGetOptionalParameters() {
+        final Injector injector = Guice.createInjector();
+        final Guicier guicier = injector.getInstance(Guicier.class);
+        @SuppressWarnings("boxing")
+        final PageParameters params = guicier.get(TestObject2.class, 1.0f);
+
+        assertEquals(1, params.size());
     }
 
     /**
@@ -99,7 +120,21 @@ public class GuicierTest {
         final Injector injector = Guice.createInjector();
         final Guicier guicier = injector.getInstance(Guicier.class);
         @SuppressWarnings("boxing")
-        final PageParameters params = guicier.get(TestObject.class, 1, 2, "3");
+        final PageParameters params = guicier.get(TestObject.class, 1, 2l, "3");
+
+        assertEquals(3, params.size());
+        assertEquals("1", params.get("x"));
+        assertEquals("2", params.get("y"));
+        assertEquals("3", params.get("z"));
+    }
+
+    @Test(expected = WicketRuntimeException.class)
+    public void testGetTooManyParameters() {
+        final Injector injector = Guice.createInjector();
+        final Guicier guicier = injector.getInstance(Guicier.class);
+        @SuppressWarnings("boxing")
+        final PageParameters params = guicier.get(TestObject.class, 1, 2l, "3",
+                4.0);
 
         assertEquals(3, params.size());
         assertEquals("1", params.get("x"));

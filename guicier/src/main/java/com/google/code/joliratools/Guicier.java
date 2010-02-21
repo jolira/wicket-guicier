@@ -7,6 +7,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
@@ -129,7 +130,7 @@ public class Guicier {
         }
 
         throw new WicketRuntimeException("no constructor found for "
-                + pageClass + " and parameters " + args);
+                + pageClass + " and parameters " + Arrays.toString(args));
     }
 
     private PageParameters get(final Constructor<?> constructor,
@@ -146,6 +147,18 @@ public class Guicier {
                     annos, params, locale);
 
             if (paramIdx < 0) {
+                return null;
+            }
+        }
+
+        for (; paramIdx < annos.length; paramIdx++) {
+            final Parameter param = getParameter(annos[paramIdx]);
+
+            if (param == null) {
+                continue;
+            }
+
+            if (!param.optional()) {
                 return null;
             }
         }
