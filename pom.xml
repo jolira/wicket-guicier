@@ -8,7 +8,7 @@
   <groupId>com.google.code.joliratools</groupId>
   <artifactId>wicket-guicier-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <name>Wicket Guicier Parent</name>
   <description>A Possible Guicer Version of Wicket-Guice &amp; Demo</description>
   <licenses>
@@ -28,6 +28,12 @@
     </modules>
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.google.code.guice</groupId>
+        <artifactId>guice</artifactId>
+        <version>2.0.1</version>
+      </dependency>
+
       <dependency>
         <groupId>org.apache.wicket</groupId>
         <artifactId>wicket</artifactId>
@@ -122,4 +128,10 @@
       </plugin>
     </plugins>
   </build>
+
+  <scm>
+    <connection>scm:svn:https://jolira-tools.googlecode.com/svn/superpom/tags/wicket-guicier-parent-1.0.0</connection>
+    <developerConnection>scm:svn:https://jolira-tools.googlecode.com/svn/superpom/tags/wicket-guicier-parent-1.0.0</developerConnection>
+    <url>https://jolira-tools.googlecode.com/svn/superpom/tags/wicket-guicier-parent-1.0.0</url>
+  </scm>
 </project>
