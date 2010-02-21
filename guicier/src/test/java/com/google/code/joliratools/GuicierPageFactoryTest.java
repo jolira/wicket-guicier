@@ -167,6 +167,7 @@ public class GuicierPageFactoryTest {
 
     @Test
     public void testInjectedAndOneIntParameter() {
+        assertNotNull(tester); // make findbugs happy
         final Injector injector = Guice.createInjector();
         final GuicierPageFactory factory = injector
                 .getInstance(GuicierPageFactory.class);
