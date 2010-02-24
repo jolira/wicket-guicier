@@ -176,7 +176,7 @@ public class Guicier {
         }
 
         final String key = param.value();
-        final Object value = parameters.get(key);
+        final Object value = parameters != null ? parameters.get(key) : null;
 
         if (value == null) {
             return null;

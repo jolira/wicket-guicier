@@ -2,6 +2,7 @@ package com.google.code.joliratools;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
@@ -83,6 +84,16 @@ public class GuicierPageFactoryTest {
         }
     }
 
+    public static class TestPage5a extends WebPage {
+        @Inject
+        TestPage5a(
+                final IConverter converter,
+                @Parameter(value = "company", optional = true) final String company) {
+            assertNull(company);
+            assertEquals(IntegerConverter.class, converter.getClass());
+        }
+    }
+
     public static class TestPage6 extends WebPage {
         @Inject
         TestPage6(@Parameter("offset") final int offset) {
@@ -152,7 +163,6 @@ public class GuicierPageFactoryTest {
         }
     }
 
-    @SuppressWarnings("unused")
     private WicketTester tester;
 
     @Before
@@ -211,6 +221,21 @@ public class GuicierPageFactoryTest {
         params.put("company", "jolira");
 
         factory.newPage(TestPage9.class, params);
+    }
+
+    @Test
+    public void testInjectedAndOneOptionalParameter() {
+        final Injector injector = Guice.createInjector(new Module() {
+            @Override
+            public void configure(final Binder binder) {
+                binder.bind(IConverter.class).to(IntegerConverter.class);
+            }
+        });
+        final GuicierPageFactory factory = injector
+                .getInstance(GuicierPageFactory.class);
+        final Page page = factory.newPage(TestPage5a.class);
+
+        assertNotNull(page);
     }
 
     @Test
