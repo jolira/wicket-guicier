@@ -324,6 +324,19 @@ public class GuicierPageFactoryTest {
         factory.newPage(TestPage0.class);
     }
 
+    @Test(expected = WicketRuntimeException.class)
+    public void testNoSuitableConstructorWithParameters() {
+        final Injector injector = Guice.createInjector();
+        final GuicierPageFactory factory = injector
+                .getInstance(GuicierPageFactory.class);
+
+        final PageParameters params = new PageParameters();
+
+        params.put("company", "jolira");
+
+        factory.newPage(TestPage0.class, params);
+    }
+
     @Test
     public void testPageNoParameters() {
         final Injector injector = Guice.createInjector();

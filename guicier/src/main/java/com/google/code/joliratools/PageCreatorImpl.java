@@ -14,8 +14,10 @@ final class PageCreatorImpl implements PageMaker {
     private final PageConstructor defaultConstructor;
     private final PageConstructor paramsOnlyConstructor;
     private final PageConstructor[] annotatedConstructors;
+    private final Class<? extends Page> pageClass;
 
     <C extends Page> PageCreatorImpl(final Injector injector, final Class<C> cls) {
+        pageClass = cls;
         @SuppressWarnings("unchecked")
         final Constructor<Page>[] constructors = (Constructor<Page>[]) cls
                 .getDeclaredConstructors();
@@ -77,7 +79,17 @@ final class PageCreatorImpl implements PageMaker {
             return defaultConstructor.newInstance(parameters);
         }
 
-        throw new WicketRuntimeException("no suitable constructor found for "
-                + parameters);
+        final StringBuilder buf = new StringBuilder();
+
+        buf.append("no suitable constructor for page ");
+        buf.append(pageClass);
+
+        if (parameters != null) {
+            buf.append(" using { ");
+            buf.append(parameters);
+            buf.append(" }");
+        }
+
+        throw new WicketRuntimeException(buf.toString());
     }
 }
