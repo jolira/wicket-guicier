@@ -53,6 +53,13 @@ public class GuicierPageFactoryTest {
         // nothing
     }
 
+    public static class TestPage1a extends WebPage {
+        public TestPage1a() {
+            fail("fail on purpose");
+        }
+        // nothing
+    }
+
     public static class TestPage2 extends WebPage {
         TestPage2(final PageParameters params) {
             assertNotNull(params);
@@ -173,6 +180,15 @@ public class GuicierPageFactoryTest {
     @After
     public void teardown() {
         tester = null;
+    }
+
+    @Test(expected = WicketRuntimeException.class)
+    public void testErrorHandling() {
+        final Injector injector = Guice.createInjector();
+        final GuicierPageFactory factory = injector
+                .getInstance(GuicierPageFactory.class);
+
+        factory.newPage(TestPage1a.class);
     }
 
     @Test
