@@ -2,7 +2,7 @@
   <parent>
     <artifactId>superpom</artifactId>
     <groupId>com.google.code.joliratools</groupId>
-    <version>1.0.3</version>
+    <version>1.0.2</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.google.code.joliratools</groupId>
@@ -129,6 +129,14 @@
     </plugins>
   </build>
 
+  <repositories>
+    <repository>  
+      <id>jolira-tools-repo</id>
+      <name>Jolira-Tools Maven Repository</name>
+      <url>http://jolira-tools.googlecode.com/svn/maven/repo</url>
+    </repository>  
+  </repositories>
+  
   <scm>
     <connection>scm:svn:https://jolira-tools.googlecode.com/svn/superpom/tags/wicket-guicier-parent-1.0.2</connection>
     <developerConnection>scm:svn:https://jolira-tools.googlecode.com/svn/superpom/tags/wicket-guicier-parent-1.0.2</developerConnection>
