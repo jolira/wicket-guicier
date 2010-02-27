@@ -29,6 +29,10 @@ import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
 public class GuicierPageFactoryTest {
+    static enum State {
+        ON, OFF
+    }
+
     private static class StringConverter implements IConverter {
         private static final long serialVersionUID = 5221463436925128138L;
 
@@ -51,6 +55,13 @@ public class GuicierPageFactoryTest {
 
     public static class TestPage1 extends WebPage {
         // nothing
+    }
+
+    public static class TestPage10 extends WebPage {
+        @Inject
+        TestPage10(@Parameter("state") final State state) {
+            assertEquals(State.ON, state);
+        }
     }
 
     public static class TestPage1a extends WebPage {
@@ -180,6 +191,18 @@ public class GuicierPageFactoryTest {
     @After
     public void teardown() {
         tester = null;
+    }
+
+    @Test
+    public void testEnumerationConverter() {
+        final Injector injector = Guice.createInjector();
+        final GuicierPageFactory factory = injector
+                .getInstance(GuicierPageFactory.class);
+        final PageParameters params = new PageParameters();
+
+        params.put("state", "ON");
+
+        factory.newPage(TestPage10.class, params);
     }
 
     @Test(expected = WicketRuntimeException.class)
@@ -329,7 +352,6 @@ public class GuicierPageFactoryTest {
         final Injector injector = Guice.createInjector();
         final GuicierPageFactory factory = injector
                 .getInstance(GuicierPageFactory.class);
-
         final PageParameters params = new PageParameters();
 
         params.put("company", "jolira");

@@ -38,6 +38,28 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class Guicier {
+    private class EnumConverter<T extends Enum<T>> implements IConverter {
+        private static final long serialVersionUID = -5797300013416456562L;
+        private final Class<T> type;
+
+        EnumConverter(final Class<T> type) {
+            this.type = type;
+        }
+
+        @Override
+        public Object convertToObject(final String value, final Locale locale) {
+            return Enum.valueOf(type, value);
+        }
+
+        @Override
+        public String convertToString(final Object value, final Locale locale) {
+            final Enum<?> _enum = (Enum<?>) value;
+
+            return _enum.name();
+        }
+
+    }
+
     public static class StringConverter implements IConverter {
         private static final long serialVersionUID = 5221463436925128138L;
 
@@ -214,12 +236,19 @@ public class Guicier {
         final Class<? extends IConverter> converterClass = getConverterClass(
                 param, type);
 
-        if (converterClass == null) {
+        if (converterClass != null) {
+            return injector.getInstance(converterClass);
+        }
+
+        if (!type.isEnum()) {
             throw new WicketRuntimeException("please specify a converter "
                     + param + " of type " + type);
         }
 
-        return injector.getInstance(converterClass);
+        @SuppressWarnings("unchecked")
+        final EnumConverter<?> converter = new EnumConverter(type);
+
+        return converter;
     }
 
     private Class<? extends IConverter> getConverterClass(

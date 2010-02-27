@@ -64,6 +64,10 @@ public class GuicierTest {
         }
     }
 
+    static enum State {
+        ON, OFF
+    }
+
     public static class TestObject {
         @Inject
         public TestObject(@Parameter("x") final int x,
@@ -85,6 +89,23 @@ public class GuicierTest {
             assertEquals(0, y, 0.0);
             assertNull(z);
         }
+    }
+
+    public static class TestObject3 {
+        @Inject
+        public TestObject3(@Parameter("state") final State x) {
+            assertEquals(State.OFF, x);
+        }
+    }
+
+    @Test
+    public void testGetEnumParameters() {
+        final Injector injector = Guice.createInjector();
+        final Guicier guicier = injector.getInstance(Guicier.class);
+        final PageParameters params = guicier.get(TestObject3.class, State.OFF);
+
+        assertEquals(1, params.size());
+        assertEquals("OFF", params.get("state"));
     }
 
     @Test
