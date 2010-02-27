@@ -1,5 +1,6 @@
 package com.jolira.guicier;
 
+import org.apache.wicket.IPageFactory;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.settings.ISessionSettings;
 
@@ -38,9 +39,9 @@ public class WicketApplication extends WebApplication {
                 // TODO
             }
         });
-        final GuicierPageFactory pageFactory = injector
+        final IPageFactory pageFactory = injector
                 .getInstance(GuicierPageFactory.class);// new
-                                                       // GuicierPageFactory(injector);
+        // GuicierPageFactory(injector);
 
         sessionSettings.setPageFactory(pageFactory);
 
