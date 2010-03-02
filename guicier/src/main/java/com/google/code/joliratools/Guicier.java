@@ -201,7 +201,7 @@ public class Guicier {
         final Object value = parameters != null ? parameters.get(key) : null;
 
         if (value == null) {
-            return null;
+            return getNullValue(type);
         }
 
         if (value instanceof String) {
@@ -318,6 +318,43 @@ public class Guicier {
 
         if (BigDecimal.class.equals(type)) {
             return BigDecimalConverter.class;
+        }
+
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getNullValue(final Class<T> type) {
+        if (int.class.equals(type)) {
+            return (T) Integer.valueOf(0);
+        }
+
+        if (double.class.equals(type)) {
+            return (T) Double.valueOf(0);
+        }
+
+        if (float.class.equals(type)) {
+            return (T) Float.valueOf(0);
+        }
+
+        if (short.class.equals(type)) {
+            return (T) Short.valueOf((short) 0);
+        }
+
+        if (long.class.equals(type)) {
+            return (T) Long.valueOf(0);
+        }
+
+        if (byte.class.equals(type)) {
+            return (T) Byte.valueOf((byte) 0);
+        }
+
+        if (char.class.equals(type)) {
+            return (T) Character.valueOf((char) 0);
+        }
+
+        if (boolean.class.equals(type)) {
+            return (T) Boolean.FALSE;
         }
 
         return null;

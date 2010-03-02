@@ -1,6 +1,7 @@
 package com.google.code.joliratools;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -61,6 +62,70 @@ public class GuicierPageFactoryTest {
         @Inject
         TestPage10(@Parameter("state") final State state) {
             assertEquals(State.ON, state);
+        }
+    }
+
+    public static class TestPage11 extends WebPage {
+        @Inject
+        TestPage11(
+                @Parameter(value = "offset", optional = true) final int offset) {
+            assertEquals(0, offset);
+        }
+    }
+
+    public static class TestPage12 extends WebPage {
+        @Inject
+        TestPage12(
+                @Parameter(value = "offset", optional = true) final double offset) {
+            assertEquals(0, offset, 0);
+        }
+    }
+
+    public static class TestPage13 extends WebPage {
+        @Inject
+        TestPage13(
+                @Parameter(value = "offset", optional = true) final short offset) {
+            assertEquals(0, offset, 0);
+        }
+    }
+
+    public static class TestPage14 extends WebPage {
+        @Inject
+        TestPage14(
+                @Parameter(value = "offset", optional = true) final float offset) {
+            assertEquals(0, offset, 0);
+        }
+    }
+
+    public static class TestPage15 extends WebPage {
+        @Inject
+        TestPage15(
+                @Parameter(value = "offset", optional = true) final boolean offset) {
+            assertFalse(offset);
+        }
+    }
+
+    public static class TestPage16 extends WebPage {
+        @Inject
+        TestPage16(
+                @Parameter(value = "offset", optional = true) final long offset) {
+            assertEquals(0, offset);
+        }
+    }
+
+    public static class TestPage17 extends WebPage {
+        @Inject
+        TestPage17(
+                @Parameter(value = "offset", optional = true) final char offset) {
+            assertEquals(0, offset);
+        }
+    }
+
+    public static class TestPage18 extends WebPage {
+        @Inject
+        TestPage18(
+                @Parameter(value = "offset", optional = true) final byte offset) {
+            assertEquals(0, offset);
         }
     }
 
@@ -357,6 +422,70 @@ public class GuicierPageFactoryTest {
         params.put("company", "jolira");
 
         factory.newPage(TestPage0.class, params);
+    }
+
+    @Test
+    public void testOptionalBoolean() {
+        final Injector injector = Guice.createInjector();
+        final GuicierPageFactory factory = injector
+                .getInstance(GuicierPageFactory.class);
+        factory.newPage(TestPage15.class);
+    }
+
+    @Test
+    public void testOptionalByte() {
+        final Injector injector = Guice.createInjector();
+        final GuicierPageFactory factory = injector
+                .getInstance(GuicierPageFactory.class);
+        factory.newPage(TestPage18.class);
+    }
+
+    @Test
+    public void testOptionalChar() {
+        final Injector injector = Guice.createInjector();
+        final GuicierPageFactory factory = injector
+                .getInstance(GuicierPageFactory.class);
+        factory.newPage(TestPage17.class);
+    }
+
+    @Test
+    public void testOptionalDouble() {
+        final Injector injector = Guice.createInjector();
+        final GuicierPageFactory factory = injector
+                .getInstance(GuicierPageFactory.class);
+        factory.newPage(TestPage12.class);
+    }
+
+    @Test
+    public void testOptionalFloat() {
+        final Injector injector = Guice.createInjector();
+        final GuicierPageFactory factory = injector
+                .getInstance(GuicierPageFactory.class);
+        factory.newPage(TestPage14.class);
+    }
+
+    @Test
+    public void testOptionalInteger() {
+        final Injector injector = Guice.createInjector();
+        final GuicierPageFactory factory = injector
+                .getInstance(GuicierPageFactory.class);
+        factory.newPage(TestPage11.class);
+    }
+
+    @Test
+    public void testOptionalLong() {
+        final Injector injector = Guice.createInjector();
+        final GuicierPageFactory factory = injector
+                .getInstance(GuicierPageFactory.class);
+        factory.newPage(TestPage16.class);
+    }
+
+    @Test
+    public void testOptionalShort() {
+        final Injector injector = Guice.createInjector();
+        final GuicierPageFactory factory = injector
+                .getInstance(GuicierPageFactory.class);
+        factory.newPage(TestPage13.class);
     }
 
     @Test
