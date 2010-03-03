@@ -208,11 +208,13 @@ public class Guicier {
 
         cleansed.put(key, value);
 
-        if (value instanceof String) {
+        final Class<? extends Object> valClass = value.getClass();
+
+        if (!valClass.isArray()) {
             return getValue(param, type, value);
         }
 
-        final String[] array = (String[]) value;
+        final Object[] array = (Object[]) value;
 
         if (!type.isArray()) {
             if (array.length < 1) {
@@ -376,8 +378,9 @@ public class Guicier {
     private <T> T getValue(final Parameter param, final Class<T> type,
             final Object value) {
         final IConverter converter = getConverter(param, type);
+        final String strValue = value.toString();
         @SuppressWarnings("unchecked")
-        final T converted = (T) converter.convertToObject((String) value, null);
+        final T converted = (T) converter.convertToObject(strValue, null);
 
         return converted;
     }
