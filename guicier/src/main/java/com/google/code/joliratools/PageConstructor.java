@@ -174,6 +174,7 @@ final class PageConstructor {
 
     public Page newInstance(final PageParameters parameters) {
         final Object[] args = new Object[params.length];
+        final PageParameters cleansed = new PageParameters();
 
         for (int idx = 0; idx < params.length; idx++) {
             final Provider<?> provider = providers[idx];
@@ -183,7 +184,8 @@ final class PageConstructor {
             } else {
                 final Parameter param = params[idx];
 
-                args[idx] = gpp.get(parameters, param, parameterTypes[idx]);
+                args[idx] = gpp.get(parameters, param, parameterTypes[idx],
+                        cleansed);
             }
         }
 

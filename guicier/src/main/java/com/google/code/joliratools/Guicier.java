@@ -188,11 +188,13 @@ public class Guicier {
         return params;
     }
 
-    public <T> T get(final PageParameters parameters, final Parameter param,
-            final Class<T> type) {
+    <T> T get(final PageParameters parameters, final Parameter param,
+            final Class<T> type, final PageParameters cleansed) {
         if (PageParameters.class.isAssignableFrom(type)) {
+            final PageParameters _params = cleansed.size() > 0 ? cleansed
+                    : parameters;
             @SuppressWarnings("unchecked")
-            final T params = (T) parameters;
+            final T params = (T) _params;
 
             return params;
         }
@@ -203,6 +205,8 @@ public class Guicier {
         if (value == null) {
             return getNullValue(type);
         }
+
+        cleansed.put(key, value);
 
         if (value instanceof String) {
             return getValue(param, type, value);

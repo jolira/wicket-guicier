@@ -209,7 +209,8 @@ public class GuicierPageFactoryTest {
                 @Parameter("success") final Boolean success2,
                 @Parameter(value = "offset", converter = StringConverter.class) final String offset12,
                 @Parameter("offset") final byte offset13,
-                @Parameter("offset") final Byte offset14) {
+                @Parameter("offset") final Byte offset14,
+                final PageParameters params) {
             assertEquals(15, offset2);
             assertEquals(Long.valueOf(15), offset3);
             assertEquals(Integer.valueOf(15), offset4);
@@ -225,6 +226,9 @@ public class GuicierPageFactoryTest {
             assertEquals("converted:15", offset12);
             assertEquals(Byte.valueOf((byte) 15), offset14);
             assertEquals(Byte.valueOf((byte) 15), Byte.valueOf(offset13));
+            assertEquals(2, params.size());
+            assertEquals("15", params.get("offset"));
+            assertEquals("true", params.get("success"));
         }
     }
 

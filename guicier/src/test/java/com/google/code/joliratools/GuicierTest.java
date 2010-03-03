@@ -127,13 +127,15 @@ public class GuicierTest {
         final Guicier guicier = injector.getInstance(Guicier.class);
         final Parameter param = new ParameterMock("company");
         final PageParameters parameters = new PageParameters();
+        final PageParameters cleansed = new PageParameters();
 
         parameters.put("company", "jolira");
 
         final PageParameters value = guicier.get(parameters, param,
-                PageParameters.class);
+                PageParameters.class, cleansed);
 
         assertEquals(parameters, value);
+        assertEquals(0, cleansed.size());
     }
 
     @Test
@@ -172,12 +174,16 @@ public class GuicierTest {
         final Guicier guicier = injector.getInstance(Guicier.class);
         final Parameter param = new ParameterMock("company");
         final PageParameters parameters = new PageParameters();
+        final PageParameters cleansed = new PageParameters();
 
         parameters.put("company", "jolira");
 
-        final Object value = guicier.get(parameters, param, Map.class);
+        final Object value = guicier
+                .get(parameters, param, Map.class, cleansed);
 
         assertSame(parameters, value);
+        assertEquals(1, cleansed.size());
+        assertEquals("jolira", cleansed.get("company"));
     }
 
     /**
@@ -190,12 +196,16 @@ public class GuicierTest {
         final Parameter param = new ParameterMock("company", false,
                 StringConverter.class);
         final PageParameters parameters = new PageParameters();
+        final PageParameters cleansed = new PageParameters();
 
         parameters.put("company", "jolira");
 
-        final Object value = guicier.get(parameters, param, String.class);
+        final Object value = guicier.get(parameters, param, String.class,
+                cleansed);
 
         assertEquals("jolira", value);
+        assertEquals(1, cleansed.size());
+        assertEquals("jolira", cleansed.get("company"));
     }
 
     /**
@@ -207,12 +217,19 @@ public class GuicierTest {
         final Guicier guicier = injector.getInstance(Guicier.class);
         final Parameter param = new ParameterMock("company");
         final PageParameters parameters = new PageParameters();
+        final PageParameters cleansed = new PageParameters();
 
         parameters.put("company", new String[0]);
 
-        final Object value = guicier.get(parameters, param, String.class);
+        final Object value = guicier.get(parameters, param, String.class,
+                cleansed);
 
         assertNull(value);
+        assertEquals(1, cleansed.size());
+
+        final String[] actual = (String[]) cleansed.get("company");
+
+        assertEquals(0, actual.length);
     }
 
     /**
@@ -224,12 +241,20 @@ public class GuicierTest {
         final Guicier guicier = injector.getInstance(Guicier.class);
         final Parameter param = new ParameterMock("value");
         final PageParameters parameters = new PageParameters();
+        final PageParameters cleansed = new PageParameters();
 
         parameters.put("value", new String[] { "jolira" });
 
-        final String value = guicier.get(parameters, param, String.class);
+        final String value = guicier.get(parameters, param, String.class,
+                cleansed);
 
         assertEquals("jolira", value);
+        assertEquals(1, cleansed.size());
+
+        final String[] actual = (String[]) cleansed.get("value");
+
+        assertEquals(1, actual.length);
+        assertEquals("jolira", actual[0]);
     }
 
     /**
@@ -241,15 +266,25 @@ public class GuicierTest {
         final Guicier guicier = injector.getInstance(Guicier.class);
         final Parameter param = new ParameterMock("company");
         final PageParameters parameters = new PageParameters();
+        final PageParameters cleansed = new PageParameters();
 
         parameters.put("company", new String[] { "1", "2", "3" });
 
-        final String[] value = guicier.get(parameters, param, String[].class);
+        final String[] value = guicier.get(parameters, param, String[].class,
+                cleansed);
 
         assertEquals(3, value.length);
         assertEquals("1", value[0]);
         assertEquals("2", value[1]);
         assertEquals("3", value[2]);
+        assertEquals(1, cleansed.size());
+
+        final String[] actual = (String[]) cleansed.get("company");
+
+        assertEquals(3, actual.length);
+        assertEquals("1", actual[0]);
+        assertEquals("2", actual[1]);
+        assertEquals("3", actual[2]);
     }
 
     /**
@@ -261,9 +296,12 @@ public class GuicierTest {
         final Guicier guicier = injector.getInstance(Guicier.class);
         final Parameter param = new ParameterMock("company");
         final PageParameters parameters = new PageParameters();
-        final Object value = guicier.get(parameters, param, String.class);
+        final PageParameters cleansed = new PageParameters();
+        final Object value = guicier.get(parameters, param, String.class,
+                cleansed);
 
         assertNull(value);
+        assertEquals(0, cleansed.size());
     }
 
     /**
@@ -275,11 +313,15 @@ public class GuicierTest {
         final Guicier guicier = injector.getInstance(Guicier.class);
         final Parameter param = new ParameterMock("company");
         final PageParameters parameters = new PageParameters();
+        final PageParameters cleansed = new PageParameters();
 
         parameters.put("company", "jolira");
 
-        final Object value = guicier.get(parameters, param, String.class);
+        final Object value = guicier.get(parameters, param, String.class,
+                cleansed);
 
         assertEquals("jolira", value);
+        assertEquals(1, cleansed.size());
+        assertEquals("jolira", cleansed.get("company"));
     }
 }
