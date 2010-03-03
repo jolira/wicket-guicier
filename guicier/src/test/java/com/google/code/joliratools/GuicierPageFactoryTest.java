@@ -202,11 +202,9 @@ public class GuicierPageFactoryTest {
             assertEquals(BigDecimal.valueOf(15), offset11);
             assertEquals(Boolean.TRUE, success2);
             assertEquals(Boolean.TRUE, Boolean.valueOf(success1));
-            // assertEquals("converted:15", offset12);
             assertEquals(Byte.valueOf((byte) 15), offset14);
             assertEquals(Byte.valueOf((byte) 15), Byte.valueOf(offset13));
             assertEquals(2, params.size());
-            // assertEquals("15", params.get("offset").toString());
             assertEquals("true", params.get("success"));
         }
     }
