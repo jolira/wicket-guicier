@@ -52,7 +52,7 @@ final class PageCreatorImpl implements PageMaker {
 
     @Override
     public Page create(final PageParameters parameters) {
-        int matchedCount = 0;
+        int matchedCount = -1;
         PageConstructor matchedConstructor = null;
 
         for (final PageConstructor constructor : annotatedConstructors) {
