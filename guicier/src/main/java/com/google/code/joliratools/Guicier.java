@@ -211,17 +211,17 @@ public class Guicier {
         final Class<? extends Object> valClass = value.getClass();
 
         if (!valClass.isArray()) {
-            return getValue(param, type, value);
+            return getValue(param, type, value, valClass);
         }
 
         final Object[] array = (Object[]) value;
+        final Class<?> valComponentType = valClass.getComponentType();
 
         if (!type.isArray()) {
             if (array.length < 1) {
                 return null;
             }
-
-            return getValue(param, type, array[0]);
+            return getValue(param, type, array[0], valComponentType);
         }
 
         final Class<?> componentType = type.getComponentType();
@@ -229,7 +229,8 @@ public class Guicier {
                 array.length);
 
         for (int idx = 0; idx < array.length; idx++) {
-            _array[idx] = getValue(param, componentType, array[idx]);
+            _array[idx] = getValue(param, componentType, array[idx],
+                    valComponentType);
         }
 
         @SuppressWarnings("unchecked")
@@ -376,7 +377,14 @@ public class Guicier {
     }
 
     private <T> T getValue(final Parameter param, final Class<T> type,
-            final Object value) {
+            final Object value, final Class<?> valClass) {
+        if (type.isAssignableFrom(valClass)) {
+            @SuppressWarnings("unchecked")
+            final T casted = (T) value;
+
+            return casted;
+        }
+
         final IConverter converter = getConverter(param, type);
         final String strValue = value.toString();
         @SuppressWarnings("unchecked")
