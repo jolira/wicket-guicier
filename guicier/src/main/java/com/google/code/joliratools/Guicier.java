@@ -48,6 +48,10 @@ public class Guicier {
 
         @Override
         public Object convertToObject(final String value, final Locale locale) {
+            if (value.isEmpty()) {
+                return null;
+            }
+
             return Enum.valueOf(type, value);
         }
 
