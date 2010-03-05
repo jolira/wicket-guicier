@@ -30,6 +30,13 @@ import com.google.inject.name.Named;
 import com.google.inject.name.Names;
 
 public class GuicierPageFactoryTest {
+    public static class EnumerationTestPage extends WebPage {
+        @Inject
+        EnumerationTestPage(@Parameter("state") final State state) {
+            assertEquals(State.ON, state);
+        }
+    }
+
     static enum State {
         ON, OFF
     }
@@ -57,13 +64,6 @@ public class GuicierPageFactoryTest {
 
     public static class TestPage1 extends WebPage {
         // nothing
-    }
-
-    public static class TestPage10 extends WebPage {
-        @Inject
-        TestPage10(@Parameter("state") final State state) {
-            assertEquals(State.ON, state);
-        }
     }
 
     public static class TestPage12 extends WebPage {
@@ -331,7 +331,19 @@ public class GuicierPageFactoryTest {
 
         params.put("state", "ON");
 
-        factory.newPage(TestPage10.class, params);
+        factory.newPage(EnumerationTestPage.class, params);
+    }
+
+    @Test
+    public void testEnumerationConverterOrdinals() {
+        final Injector injector = Guice.createInjector();
+        final GuicierPageFactory factory = injector
+                .getInstance(GuicierPageFactory.class);
+        final PageParameters params = new PageParameters();
+
+        params.put("state", "0");
+
+        factory.newPage(EnumerationTestPage.class, params);
     }
 
     @Test(expected = WicketRuntimeException.class)
