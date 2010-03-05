@@ -216,15 +216,18 @@ public class Guicier {
 
         final Object[] array = (Object[]) value;
         final Class<?> valComponentType = valClass.getComponentType();
+        final Class<?> componentType = type.getComponentType();
 
         if (!type.isArray()) {
             if (array.length < 1) {
-                return null;
+                @SuppressWarnings("unchecked")
+                final Class<T> casted = (Class<T>) componentType;
+
+                return getNullValue(casted);
             }
             return getValue(param, type, array[0], valComponentType);
         }
 
-        final Class<?> componentType = type.getComponentType();
         final Object[] _array = (Object[]) Array.newInstance(componentType,
                 array.length);
 
@@ -357,7 +360,7 @@ public class Guicier {
         }
 
         if (char.class.equals(type)) {
-            return (T) Character.valueOf((char) 0);
+            return (T) Character.valueOf('\0');
         }
 
         if (boolean.class.equals(type)) {

@@ -49,6 +49,7 @@ public class GuicierPageFactoryTest {
     }
 
     public static class TestPage0 extends WebPage {
+        @Inject
         TestPage0(@SuppressWarnings("unused") final IConverter converter) {
             fail();
         }
@@ -171,9 +172,29 @@ public class GuicierPageFactoryTest {
             fail();
         }
 
+        /**
+         * 
+         * @param offset
+         * @param offset2
+         * @param offset3
+         * @param offset4
+         * @param offset5
+         * @param offset6
+         * @param offset7
+         * @param offset8
+         * @param offset9
+         * @param offset10
+         * @param offset11
+         * @param success1
+         * @param success2
+         * @param offset12
+         * @param offset13
+         * @param offset14
+         * @param params
+         */
         @Inject
         TestPage7(
-                @SuppressWarnings("unused") @Parameter("offset") final int offset,
+                @Parameter("offset") final int offset,
                 @Parameter("offset") final long offset2,
                 @Parameter("offset") final Long offset3,
                 @Parameter("offset") final Integer offset4,
@@ -223,6 +244,16 @@ public class GuicierPageFactoryTest {
         TestPage9(
                 @Named("jfk") @SuppressWarnings("unused") final IConverter converter,
                 @SuppressWarnings("unused") @Parameter("company") final Map<String, String> company) {
+            fail();
+        }
+    }
+
+    public static class TestPage99 extends WebPage {
+        /**
+         * @param state
+         */
+        @Inject
+        TestPage99(@Parameter("state") final State state) {
             fail();
         }
     }
@@ -453,8 +484,23 @@ public class GuicierPageFactoryTest {
     }
 
     @Test(expected = WicketRuntimeException.class)
-    public void testNoSuitableConstructor() {
+    public void testMissingParamsConstructor() {
         final Injector injector = Guice.createInjector();
+        final GuicierPageFactory factory = injector
+                .getInstance(GuicierPageFactory.class);
+        final PageParameters params = new PageParameters();
+
+        factory.newPage(TestPage99.class, params);
+    }
+
+    @Test(expected = WicketRuntimeException.class)
+    public void testNoSuitableConstructor() {
+        final Injector injector = Guice.createInjector(new Module() {
+            @Override
+            public void configure(final Binder binder) {
+                binder.bind(IConverter.class).to(IntegerConverter.class);
+            }
+        });
         final GuicierPageFactory factory = injector
                 .getInstance(GuicierPageFactory.class);
 
@@ -463,7 +509,12 @@ public class GuicierPageFactoryTest {
 
     @Test(expected = WicketRuntimeException.class)
     public void testNoSuitableConstructorWithParameters() {
-        final Injector injector = Guice.createInjector();
+        final Injector injector = Guice.createInjector(new Module() {
+            @Override
+            public void configure(final Binder binder) {
+                binder.bind(IConverter.class).to(IntegerConverter.class);
+            }
+        });
         final GuicierPageFactory factory = injector
                 .getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
@@ -475,7 +526,12 @@ public class GuicierPageFactoryTest {
 
     @Test
     public void testOptionalBoolean() {
-        final Injector injector = Guice.createInjector();
+        final Injector injector = Guice.createInjector(new Module() {
+            @Override
+            public void configure(final Binder binder) {
+                binder.bind(IConverter.class).to(IntegerConverter.class);
+            }
+        });
         final GuicierPageFactory factory = injector
                 .getInstance(GuicierPageFactory.class);
         factory.newPage(TestPage15.class);
