@@ -132,7 +132,7 @@ final class PageConstructor {
 
             final String key = param.value();
 
-            if (parameters != null && !parameters.containsKey(key)) {
+            if (parameters == null || !parameters.containsKey(key)) {
                 if (!param.optional()) {
                     return -1;
                 }

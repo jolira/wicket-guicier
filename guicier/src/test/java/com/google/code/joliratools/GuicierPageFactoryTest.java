@@ -250,10 +250,12 @@ public class GuicierPageFactoryTest {
 
     public static class TestPage99 extends WebPage {
         /**
+         * @param converter
          * @param state
          */
         @Inject
-        TestPage99(@Parameter("state") final State state) {
+        TestPage99(final IConverter converter,
+                @Parameter("state") final State state) {
             fail();
         }
     }
@@ -485,12 +487,16 @@ public class GuicierPageFactoryTest {
 
     @Test(expected = WicketRuntimeException.class)
     public void testMissingParamsConstructor() {
-        final Injector injector = Guice.createInjector();
+        final Injector injector = Guice.createInjector(new Module() {
+            @Override
+            public void configure(final Binder binder) {
+                binder.bind(IConverter.class).to(IntegerConverter.class);
+            }
+        });
         final GuicierPageFactory factory = injector
                 .getInstance(GuicierPageFactory.class);
-        final PageParameters params = new PageParameters();
 
-        factory.newPage(TestPage99.class, params);
+        factory.newPage(TestPage99.class);
     }
 
     @Test(expected = WicketRuntimeException.class)
