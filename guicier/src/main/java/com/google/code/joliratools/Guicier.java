@@ -64,6 +64,110 @@ public class Guicier {
 
     }
 
+    public static class PrimitiveBooleanConverter extends BooleanConverter {
+        private static final long serialVersionUID = -3890658188435687997L;
+
+        @Override
+        public Object convertToObject(final String value, final Locale locale) {
+            if (value.isEmpty()) {
+                return Boolean.FALSE;
+            }
+
+            return super.convertToObject(value, locale);
+        }
+    }
+
+    public static class PrimitiveByteConverter extends ByteConverter {
+        private static final long serialVersionUID = -2108916636178629276L;
+
+        @Override
+        public Object convertToObject(final String value, final Locale locale) {
+            if (value.isEmpty()) {
+                return Byte.valueOf((byte) 0);
+            }
+
+            return super.convertToObject(value, locale);
+        }
+    }
+
+    public static class PrimitiveCharConverter extends CharacterConverter {
+        private static final long serialVersionUID = 2848347198715860269L;
+
+        @Override
+        public Object convertToObject(final String value, final Locale locale) {
+            if (value.isEmpty()) {
+                return Character.valueOf('\0');
+            }
+
+            return super.convertToObject(value, locale);
+        }
+    }
+
+    public static class PrimitiveDoubleConverter extends DoubleConverter {
+        private static final long serialVersionUID = -1963485530208715854L;
+
+        @Override
+        public Double convertToObject(final String value, final Locale locale) {
+            if (value.isEmpty()) {
+                return Double.valueOf(0);
+            }
+
+            return super.convertToObject(value, locale);
+        }
+    }
+
+    public static class PrimitiveFloatConverter extends FloatConverter {
+        private static final long serialVersionUID = -4336506003120398278L;
+
+        @Override
+        public Float convertToObject(final String value, final Locale locale) {
+            if (value.isEmpty()) {
+                return Float.valueOf(0);
+            }
+
+            return super.convertToObject(value, locale);
+        }
+    }
+
+    public static class PrimitiveIntConverter extends IntegerConverter {
+        private static final long serialVersionUID = 2912209049849424923L;
+
+        @Override
+        public Integer convertToObject(final String value, final Locale locale) {
+            if (value.isEmpty()) {
+                return Integer.valueOf(0);
+            }
+
+            return super.convertToObject(value, locale);
+        }
+    }
+
+    public static class PrimitiveLongConverter extends LongConverter {
+        private static final long serialVersionUID = 8726058689616316514L;
+
+        @Override
+        public Long convertToObject(final String value, final Locale locale) {
+            if (value.isEmpty()) {
+                return Long.valueOf(0);
+            }
+
+            return super.convertToObject(value, locale);
+        }
+    }
+
+    public static class PrimitiveShortConverter extends ShortConverter {
+        private static final long serialVersionUID = -3491234864470269404L;
+
+        @Override
+        public Short convertToObject(final String value, final Locale locale) {
+            if (value.isEmpty()) {
+                return Short.valueOf((short) 0);
+            }
+
+            return super.convertToObject(value, locale);
+        }
+    }
+
     public static class StringConverter implements IConverter {
         private static final long serialVersionUID = 5221463436925128138L;
 
@@ -282,35 +386,71 @@ public class Guicier {
             return StringConverter.class;
         }
 
-        if (int.class.equals(type) || Integer.class.equals(type)) {
+        if (int.class.equals(type)) {
+            return PrimitiveIntConverter.class;
+        }
+
+        if (long.class.equals(type)) {
+            return PrimitiveLongConverter.class;
+        }
+
+        if (short.class.equals(type)) {
+            return PrimitiveShortConverter.class;
+        }
+
+        if (float.class.equals(type)) {
+            return PrimitiveFloatConverter.class;
+        }
+
+        if (double.class.equals(type)) {
+            return PrimitiveDoubleConverter.class;
+        }
+
+        if (boolean.class.equals(type)) {
+            return PrimitiveBooleanConverter.class;
+        }
+
+        if (byte.class.equals(type)) {
+            return PrimitiveByteConverter.class;
+        }
+
+        if (char.class.equals(type)) {
+            return PrimitiveCharConverter.class;
+        }
+
+        if (Character.class.equals(type)) {
+            return CharacterConverter.class;
+        }
+
+        if (Integer.class.equals(type)) {
             return IntegerConverter.class;
         }
 
-        if (long.class.equals(type) || Long.class.equals(type)) {
+        if (Long.class.equals(type)) {
             return LongConverter.class;
         }
 
-        if (short.class.equals(type) || Short.class.equals(type)) {
+        if (Short.class.equals(type)) {
             return ShortConverter.class;
         }
 
-        if (float.class.equals(type) || Float.class.equals(type)) {
+        if (Float.class.equals(type)) {
             return FloatConverter.class;
         }
 
-        if (double.class.equals(type) || Double.class.equals(type)) {
+        if (Double.class.equals(type)) {
             return DoubleConverter.class;
         }
 
-        if (boolean.class.equals(type) || Boolean.class.equals(type)) {
+        if (Boolean.class.equals(type)) {
             return BooleanConverter.class;
         }
 
-        if (byte.class.equals(type) || Byte.class.equals(type)) {
+        if (Byte.class.equals(type)) {
             return ByteConverter.class;
         }
 
-        if (char.class.equals(type) || Character.class.equals(type)) {
+        if (Character.class.equals(type)) {
             return CharacterConverter.class;
         }
 

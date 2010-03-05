@@ -66,14 +66,6 @@ public class GuicierPageFactoryTest {
         }
     }
 
-    public static class TestPage11 extends WebPage {
-        @Inject
-        TestPage11(
-                @Parameter(value = "offset", optional = true) final int offset) {
-            assertEquals(0, offset);
-        }
-    }
-
     public static class TestPage12 extends WebPage {
         @Inject
         TestPage12(
@@ -267,6 +259,14 @@ public class GuicierPageFactoryTest {
         // nothing
     }
 
+    public static class TestPageIntOffset extends WebPage {
+        @Inject
+        TestPageIntOffset(
+                @Parameter(value = "offset", optional = true) final int offset) {
+            assertEquals(0, offset);
+        }
+    }
+
     public static class TestPageNullParam extends WebPage {
         TestPageNullParam(final PageParameters params) {
             assertNotNull(params);
@@ -308,6 +308,18 @@ public class GuicierPageFactoryTest {
     @After
     public void teardown() {
         tester = null;
+    }
+
+    @Test
+    public void testEmptyStringInteger() {
+        final Injector injector = Guice.createInjector();
+        final GuicierPageFactory factory = injector
+                .getInstance(GuicierPageFactory.class);
+        final PageParameters params = new PageParameters();
+
+        params.put("offset", "");
+
+        factory.newPage(TestPageIntOffset.class, params);
     }
 
     @Test
@@ -593,7 +605,7 @@ public class GuicierPageFactoryTest {
         final Injector injector = Guice.createInjector();
         final GuicierPageFactory factory = injector
                 .getInstance(GuicierPageFactory.class);
-        factory.newPage(TestPage11.class);
+        factory.newPage(TestPageIntOffset.class);
     }
 
     @Test
