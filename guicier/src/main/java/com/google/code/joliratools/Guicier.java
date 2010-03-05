@@ -52,7 +52,24 @@ public class Guicier {
                 return null;
             }
 
-            return Enum.valueOf(type, value);
+            if (!isNumeric(value)) {
+                return Enum.valueOf(type, value);
+            }
+
+            final int ordinal = Integer.parseInt(value);
+
+            final Enum<?>[] constants = type.getEnumConstants();
+
+            for (final Enum<?> constant : constants) {
+                final int _ordinal = constant.ordinal();
+
+                if (_ordinal == ordinal) {
+                    return constant;
+                }
+            }
+
+            throw new IllegalArgumentException("No enum const " + type + "."
+                    + value);
         }
 
         @Override
@@ -60,6 +77,20 @@ public class Guicier {
             final Enum<?> _enum = (Enum<?>) value;
 
             return _enum.name();
+        }
+
+        private boolean isNumeric(final String value) {
+            final int length = value.length();
+
+            for (int idx = 0; idx < length; idx++) {
+                final char c = value.charAt(idx);
+
+                if (c < '0' || c > '9') {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
     }

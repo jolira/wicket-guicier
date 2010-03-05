@@ -346,6 +346,18 @@ public class GuicierPageFactoryTest {
         factory.newPage(EnumerationTestPage.class, params);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testEnumerationInvalidOrdinal() {
+        final Injector injector = Guice.createInjector();
+        final GuicierPageFactory factory = injector
+                .getInstance(GuicierPageFactory.class);
+        final PageParameters params = new PageParameters();
+
+        params.put("state", "9");
+
+        factory.newPage(EnumerationTestPage.class, params);
+    }
+
     @Test(expected = WicketRuntimeException.class)
     public void testErrorHandling() {
         final Injector injector = Guice.createInjector();
