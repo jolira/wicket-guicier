@@ -19,8 +19,7 @@ final class PageConstructor {
         final Annotation[][] paramAnnotations = constructor
                 .getParameterAnnotations();
         int paramCount = 0;
-        boolean _isParametersOnly = false;
-
+        boolean isParametersOnly = false;
         final Class<?>[] parameterTypes = constructor.getParameterTypes();
         final Parameter[] params = new Parameter[parameterTypes.length];
         final Provider<?>[] providers = new Provider<?>[parameterTypes.length];
@@ -37,7 +36,7 @@ final class PageConstructor {
             if (parameter != null || isPageParameters) {
                 paramCount++;
                 params[idx] = parameter;
-                _isParametersOnly = paramCount == 1 && isPageParameters;
+                isParametersOnly = paramCount == 1 && isPageParameters;
             } else {
                 if (!injectAnnotationPresent) {
                     return null;
@@ -54,7 +53,7 @@ final class PageConstructor {
         final Guicier gpp = injector.getInstance(Guicier.class);
 
         return new PageConstructor(gpp, paramCount == 0,
-                injectAnnotationPresent, params, providers, _isParametersOnly,
+                injectAnnotationPresent, params, providers, isParametersOnly,
                 constructor, injector, parameterTypes);
     }
 
