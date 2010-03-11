@@ -327,11 +327,12 @@ public class Guicier {
         return params;
     }
 
-    <T> T get(final PageParameters parameters, final Parameter param,
-            final Class<T> type, final PageParameters cleansed) {
+    <T> T get(final int paramCount, final PageParameters parameters,
+            final Parameter param, final Class<T> type,
+            final PageParameters cleansed) {
         if (PageParameters.class.isAssignableFrom(type)) {
-            final PageParameters _params = parameters == null
-                    || cleansed.size() > 0 ? cleansed : parameters;
+            final PageParameters _params = parameters == null || paramCount > 0 ? cleansed
+                    : parameters;
             @SuppressWarnings("unchecked")
             final T params = (T) _params;
 
