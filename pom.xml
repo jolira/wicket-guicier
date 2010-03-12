@@ -130,6 +130,11 @@
   </build>
 
   <repositories>
+    <repository>
+      <id>guice-maven</id>
+        <name>guice maven</name>
+        <url>http://guice-maven.googlecode.com/svn/trunk</url>
+    </repository>
     <repository>  
       <id>jolira-tools-repo</id>
       <name>Jolira-Tools Maven Repository</name>
