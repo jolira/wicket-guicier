@@ -114,22 +114,6 @@ public class GuicierPageFactoryTest {
         }
     }
 
-    public static class TestPage3 extends WebPage {
-        TestPage3(final PageParameters params) {
-            assertEquals(1, params.size());
-            assertEquals("jolira", params.get("company"));
-        }
-    }
-
-    public static class TestPage4 extends WebPage {
-        @Inject
-        TestPage4(final IConverter converter, final PageParameters params) {
-            assertEquals(1, params.size());
-            assertEquals("jolira", params.get("company"));
-            assertEquals(IntegerConverter.class, converter.getClass());
-        }
-    }
-
     public static class TestPage5 extends WebPage {
         @Inject
         TestPage5(final IConverter converter,
@@ -257,6 +241,21 @@ public class GuicierPageFactoryTest {
             fail("fail on purpose");
         }
         // nothing
+    }
+
+    public static class TestPageInjectedAndPageParameters extends WebPage {
+        @Inject
+        TestPageInjectedAndPageParameters(final IConverter converter,
+                final PageParameters params) {
+            assertEquals(0, params.size());
+        }
+    }
+
+    public static class TestPageInjectWithParamsOnly extends WebPage {
+        @Inject
+        TestPageInjectWithParamsOnly(final PageParameters params) {
+            assertEquals(0, params.size());
+        }
     }
 
     public static class TestPageIntOffset extends WebPage {
@@ -511,7 +510,8 @@ public class GuicierPageFactoryTest {
 
         params.put("company", "jolira");
 
-        final Page page = factory.newPage(TestPage4.class, params);
+        final Page page = factory.newPage(
+                TestPageInjectedAndPageParameters.class, params);
 
         assertNotNull(page);
     }
@@ -649,17 +649,7 @@ public class GuicierPageFactoryTest {
     }
 
     @Test
-    public void testPageNoParameters() {
-        final Injector injector = Guice.createInjector();
-        final GuicierPageFactory factory = injector
-                .getInstance(GuicierPageFactory.class);
-
-        assertNotNull(factory.newPage(TestPage1.class));
-        assertNotNull(factory.newPage(TestPage1.class));
-    }
-
-    @Test
-    public void testPageParameters() {
+    public void testPageInjectWithParamsOnly() {
         final Injector injector = Guice.createInjector();
         final GuicierPageFactory factory = injector
                 .getInstance(GuicierPageFactory.class);
@@ -667,9 +657,20 @@ public class GuicierPageFactoryTest {
 
         params.put("company", "jolira");
 
-        final Page page = factory.newPage(TestPage3.class, params);
+        final Page page = factory.newPage(TestPageInjectWithParamsOnly.class,
+                params);
 
         assertNotNull(page);
+    }
+
+    @Test
+    public void testPageNoParameters() {
+        final Injector injector = Guice.createInjector();
+        final GuicierPageFactory factory = injector
+                .getInstance(GuicierPageFactory.class);
+
+        assertNotNull(factory.newPage(TestPage1.class));
+        assertNotNull(factory.newPage(TestPage1.class));
     }
 
     @Test

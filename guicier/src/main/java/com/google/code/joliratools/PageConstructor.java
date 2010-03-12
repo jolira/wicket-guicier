@@ -36,7 +36,8 @@ final class PageConstructor {
             if (parameter != null || isPageParameters) {
                 paramCount++;
                 params[idx] = parameter;
-                isParametersOnly = paramCount == 1 && isPageParameters;
+                isParametersOnly = paramCount == 1 && isPageParameters
+                        && !injectAnnotationPresent;
             } else {
                 if (!injectAnnotationPresent) {
                     return null;
@@ -172,9 +173,12 @@ final class PageConstructor {
     }
 
     public Page newInstance(final PageParameters parameters) {
+        if (isParametersOnly) {
+            return newInstance(new Object[] { parameters });
+        }
+
         final Object[] args = new Object[params.length];
         final PageParameters cleansed = new PageParameters();
-        int paramCount = 0;
 
         for (int idx = 0; idx < params.length; idx++) {
             final Provider<?> provider = providers[idx];
@@ -184,8 +188,8 @@ final class PageConstructor {
             } else {
                 final Parameter param = params[idx];
 
-                args[idx] = gpp.get(paramCount++, parameters, param,
-                        parameterTypes[idx], cleansed);
+                args[idx] = gpp.get(parameters, param, parameterTypes[idx],
+                        cleansed);
             }
         }
 
