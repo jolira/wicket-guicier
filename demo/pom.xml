@@ -3,23 +3,21 @@
   <parent>
     <groupId>com.jolira</groupId>
     <artifactId>wicket-guicier-parent</artifactId>
-    <version>1.0.18-SNAPSHOT</version>
+    <version>1.0.18</version>
   </parent>
   <artifactId>guicier-demo</artifactId>
   <packaging>war</packaging>
   <name>Guicier Wicket Demo</name>
   <dependencies>
     <dependency>
-      <groupId>com.google.code.guice</groupId>
+      <groupId>com.jolira</groupId>
       <artifactId>guice</artifactId>
-      <version>2.0.1</version>
     </dependency>
     
     <!--  WICKET DEPENDENCIES -->
     <dependency>
       <groupId>org.apache.wicket</groupId>
       <artifactId>wicket</artifactId>
-      <version>${wicket.version}</version>
     </dependency>
     <dependency>
       <groupId>com.jolira</groupId>
