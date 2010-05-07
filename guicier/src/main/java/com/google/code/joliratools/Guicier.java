@@ -34,7 +34,6 @@ import com.google.inject.Singleton;
 
 /**
  * @author jfk
- * 
  */
 @Singleton
 public class Guicier {
@@ -68,8 +67,7 @@ public class Guicier {
                 }
             }
 
-            throw new IllegalArgumentException("No enum const " + type + "."
-                    + value);
+            throw new IllegalArgumentException("No enum const " + type + "." + value);
         }
 
         @Override
@@ -213,8 +211,7 @@ public class Guicier {
         }
     }
 
-    private static boolean isAssignableFrom(final Class<?> left,
-            final Class<? extends Object> right) {
+    private static boolean isAssignableFrom(final Class<?> left, final Class<? extends Object> right) {
         if (left.isAssignableFrom(right)) {
             return true;
         }
@@ -249,10 +246,8 @@ public class Guicier {
         this.injector = injector;
     }
 
-    private int findMatchingParameter(final int idx, final Object arg,
-            final Class<? extends Object> argClass, final Class<?>[] types,
-            final Annotation[][] annos, final PageParameters params,
-            final Locale locale) {
+    private int findMatchingParameter(final int idx, final Object arg, final Class<? extends Object> argClass,
+            final Class<?>[] types, final Annotation[][] annos, final PageParameters params, final Locale locale) {
         if (idx >= types.length) {
             return -1;
         }
@@ -260,8 +255,7 @@ public class Guicier {
         final Parameter param = getParameter(annos[idx]);
 
         if (param == null) {
-            return findMatchingParameter(idx + 1, arg, argClass, types, annos,
-                    params, locale);
+            return findMatchingParameter(idx + 1, arg, argClass, types, annos, params, locale);
         }
 
         if (isAssignableFrom(types[idx], argClass)) {
@@ -274,8 +268,7 @@ public class Guicier {
             return -1;
         }
 
-        return findMatchingParameter(idx + 1, arg, argClass, types, annos,
-                params, locale);
+        return findMatchingParameter(idx + 1, arg, argClass, types, annos, params, locale);
     }
 
     public PageParameters get(final Class<?> pageClass, final Object... args) {
@@ -290,12 +283,11 @@ public class Guicier {
             }
         }
 
-        throw new WicketRuntimeException("no constructor found for "
-                + pageClass + " and parameters " + Arrays.toString(args));
+        throw new WicketRuntimeException("no constructor found for " + pageClass + " and parameters "
+                + Arrays.toString(args));
     }
 
-    private PageParameters get(final Constructor<?> constructor,
-            final Object[] args, final Locale locale) {
+    private PageParameters get(final Constructor<?> constructor, final Object[] args, final Locale locale) {
         final Class<?>[] types = constructor.getParameterTypes();
         final PageParameters params = new PageParameters();
         final Annotation[][] annos = constructor.getParameterAnnotations();
@@ -304,8 +296,7 @@ public class Guicier {
         for (final Object arg : args) {
             final Class<? extends Object> argClass = arg.getClass();
 
-            paramIdx = findMatchingParameter(paramIdx, arg, argClass, types,
-                    annos, params, locale);
+            paramIdx = findMatchingParameter(paramIdx, arg, argClass, types, annos, params, locale);
 
             if (paramIdx < 0) {
                 return null;
@@ -327,8 +318,7 @@ public class Guicier {
         return params;
     }
 
-    <T> T get(final PageParameters parameters, final Parameter param,
-            final Class<T> type, final PageParameters cleansed) {
+    <T> T get(final PageParameters parameters, final Parameter param, final Class<T> type, final PageParameters cleansed) {
         if (PageParameters.class.isAssignableFrom(type)) {
             @SuppressWarnings("unchecked")
             final T params = (T) cleansed;
@@ -365,12 +355,10 @@ public class Guicier {
             return getValue(param, type, array[0], valComponentType);
         }
 
-        final Object[] _array = (Object[]) Array.newInstance(componentType,
-                array.length);
+        final Object[] _array = (Object[]) Array.newInstance(componentType, array.length);
 
         for (int idx = 0; idx < array.length; idx++) {
-            _array[idx] = getValue(param, componentType, array[idx],
-                    valComponentType);
+            _array[idx] = getValue(param, componentType, array[idx], valComponentType);
         }
 
         @SuppressWarnings("unchecked")
@@ -380,16 +368,14 @@ public class Guicier {
     }
 
     private IConverter getConverter(final Parameter param, final Class<?> type) {
-        final Class<? extends IConverter> converterClass = getConverterClass(
-                param, type);
+        final Class<? extends IConverter> converterClass = getConverterClass(param, type);
 
         if (converterClass != null) {
             return injector.getInstance(converterClass);
         }
 
         if (!type.isEnum()) {
-            throw new WicketRuntimeException("please specify a converter "
-                    + param + " of type " + type);
+            throw new WicketRuntimeException("please specify a converter " + param + " of type " + type);
         }
 
         @SuppressWarnings("unchecked")
@@ -398,8 +384,7 @@ public class Guicier {
         return converter;
     }
 
-    private Class<? extends IConverter> getConverterClass(
-            final Parameter param, final Class<?> type) {
+    private Class<? extends IConverter> getConverterClass(final Parameter param, final Class<?> type) {
         final Class<? extends IConverter> converterClass = param.converter();
 
         if (IConverter.class.equals(converterClass)) {
@@ -409,8 +394,7 @@ public class Guicier {
         return converterClass;
     }
 
-    private Class<? extends IConverter> getDefaultConverterClass(
-            final Class<?> type) {
+    private Class<? extends IConverter> getDefaultConverterClass(final Class<?> type) {
         if (String.class.equals(type)) {
             return StringConverter.class;
         }
@@ -552,8 +536,7 @@ public class Guicier {
         return null;
     }
 
-    private <T> T getValue(final Parameter param, final Class<T> type,
-            final Object value, final Class<?> valClass) {
+    private <T> T getValue(final Parameter param, final Class<T> type, final Object value, final Class<?> valClass) {
         if (type.isAssignableFrom(valClass)) {
             @SuppressWarnings("unchecked")
             final T casted = (T) value;
@@ -569,8 +552,8 @@ public class Guicier {
         return converted;
     }
 
-    private void put(final PageParameters params, final Parameter param,
-            final Object arg, final Class<?> type, final Locale locale) {
+    private void put(final PageParameters params, final Parameter param, final Object arg, final Class<?> type,
+            final Locale locale) {
         final String name = param.value();
         final IConverter converter = getConverter(param, type);
         final String converted = converter.convertToString(arg, locale);

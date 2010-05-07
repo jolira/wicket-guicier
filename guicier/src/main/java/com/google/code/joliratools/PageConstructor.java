@@ -3,6 +3,7 @@ package com.google.code.joliratools;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.PageParameters;
@@ -14,38 +15,33 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 
 final class PageConstructor {
-    static PageConstructor get(final Injector injector,
-            final Constructor<Page> constructor) {
-        final Annotation[][] paramAnnotations = constructor
-                .getParameterAnnotations();
+    static PageConstructor get(final Injector injector, final Constructor<Page> constructor) {
+        final Annotation[][] paramAnnotations = constructor.getParameterAnnotations();
         int paramCount = 0;
         boolean isParametersOnly = false;
-        final Class<?>[] parameterTypes = constructor.getParameterTypes();
-        final Parameter[] params = new Parameter[parameterTypes.length];
-        final Provider<?>[] providers = new Provider<?>[parameterTypes.length];
-        final boolean injectAnnotationPresent = constructor
-                .isAnnotationPresent(Inject.class);
+        final Type[] genericParamsTypes = constructor.getGenericParameterTypes();
+        final Class<?>[] paramTypes = constructor.getParameterTypes();
+        final Parameter[] params = new Parameter[genericParamsTypes.length];
+        final Provider<?>[] providers = new Provider<?>[genericParamsTypes.length];
+        final boolean injectAnnotationPresent = constructor.isAnnotationPresent(Inject.class);
 
-        for (int idx = 0; idx < parameterTypes.length; idx++) {
+        for (int idx = 0; idx < genericParamsTypes.length; idx++) {
             final Annotation[] annos = paramAnnotations[idx];
-            final Class<?> type = parameterTypes[idx];
             final Parameter parameter = getParameterAnnotation(annos);
-            final boolean isPageParameters = PageParameters.class
-                    .isAssignableFrom(type);
+            final boolean isPageParameters = PageParameters.class.isAssignableFrom(paramTypes[idx]);
 
             if (parameter != null || isPageParameters) {
                 paramCount++;
                 params[idx] = parameter;
-                isParametersOnly = paramCount == 1 && isPageParameters
-                        && !injectAnnotationPresent;
+                isParametersOnly = paramCount == 1 && isPageParameters && !injectAnnotationPresent;
             } else {
                 if (!injectAnnotationPresent) {
                     return null;
                 }
 
                 final Annotation anno = getNonParamAnnotation(annos);
-                final Key<?> key = anno != null ? Key.get(type, anno) : Key
-                        .get(type);
+                final Type type = genericParamsTypes[idx];
+                final Key<?> key = anno != null ? Key.get(type, anno) : Key.get(type);
 
                 providers[idx] = injector.getProvider(key);
             }
@@ -53,9 +49,8 @@ final class PageConstructor {
 
         final Guicier gpp = injector.getInstance(Guicier.class);
 
-        return new PageConstructor(gpp, paramCount == 0,
-                injectAnnotationPresent, params, providers, isParametersOnly,
-                constructor, injector, parameterTypes);
+        return new PageConstructor(gpp, paramCount == 0, injectAnnotationPresent, params, providers, isParametersOnly,
+                constructor, injector, paramTypes);
     }
 
     private static Annotation getNonParamAnnotation(final Annotation[] annos) {
@@ -96,11 +91,9 @@ final class PageConstructor {
 
     private final Guicier gpp;
 
-    private PageConstructor(final Guicier gpp, final boolean isDefault,
-            final boolean isInjected, final Parameter[] params,
-            final Provider<?>[] providers, final boolean isParametersOnly,
-            final Constructor<Page> constructor, final Injector injector,
-            final Class<?>[] parameterTypes) {
+    private PageConstructor(final Guicier gpp, final boolean isDefault, final boolean isInjected,
+            final Parameter[] params, final Provider<?>[] providers, final boolean isParametersOnly,
+            final Constructor<Page> constructor, final Injector injector, final Class<?>[] parameterTypes) {
         this.gpp = gpp;
         this.params = params;
         this.providers = providers;
@@ -187,9 +180,9 @@ final class PageConstructor {
                 args[idx] = provider.get();
             } else {
                 final Parameter param = params[idx];
+                final Class<?> cls = parameterTypes[idx];
 
-                args[idx] = gpp.get(parameters, param, parameterTypes[idx],
-                        cleansed);
+                args[idx] = gpp.get(parameters, param, cls, cleansed);
             }
         }
 

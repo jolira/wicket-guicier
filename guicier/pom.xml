@@ -42,5 +42,10 @@
       <artifactId>guice</artifactId>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>com.jolira</groupId>
+      <artifactId>multibindings</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 </project>
