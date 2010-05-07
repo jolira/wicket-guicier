@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <artifactId>superpom</artifactId>
     <groupId>com.jolira</groupId>
@@ -8,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>wicket-guicier-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.0.19-SNAPSHOT</version>
+  <version>1.0.19</version>
   <name>Wicket Guicier Parent</name>
   <description>A resplacement for wicket-guice that uses constructor
 		injection as an
@@ -133,11 +132,11 @@
     </plugins>
   </build>
   <scm>
-    <connection>scm:svn:https://jolira-tools.googlecode.com/svn/superpom/tags/wicket-guicier-parent-1.0.2
+    <connection>scm:svn:https://jolira-tools.googlecode.com/svn/superpom/tags/wicket-guicier-parent-1.0.19
 		</connection>
-    <developerConnection>scm:svn:https://jolira-tools.googlecode.com/svn/superpom/tags/wicket-guicier-parent-1.0.2
+    <developerConnection>scm:svn:https://jolira-tools.googlecode.com/svn/superpom/tags/wicket-guicier-parent-1.0.19
 		</developerConnection>
-    <url>https://jolira-tools.googlecode.com/svn/superpom/tags/wicket-guicier-parent-1.0.2
+    <url>https://jolira-tools.googlecode.com/svn/superpom/tags/wicket-guicier-parent-1.0.19
 		</url>
   </scm>
 </project>
