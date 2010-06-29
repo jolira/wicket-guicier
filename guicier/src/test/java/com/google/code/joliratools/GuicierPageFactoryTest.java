@@ -48,6 +48,9 @@ public class GuicierPageFactoryTest {
         }
     }
 
+    /**
+     * A simple test page
+     */
     public static class MyTest extends WebPage {
         /**
          * @param abcde
@@ -81,7 +84,7 @@ public class GuicierPageFactoryTest {
      */
     public static class TestPage0 extends WebPage {
         @Inject
-        TestPage0(@SuppressWarnings("unused") final IConverter converter) {
+        TestPage0(final IConverter converter) {
             fail();
         }
     }
@@ -190,8 +193,8 @@ public class GuicierPageFactoryTest {
      */
     public static class TestPage7 extends WebPage {
         @Inject
-        TestPage7(@SuppressWarnings("unused") @Parameter(value = "value1", optional = true) final int value1,
-                @SuppressWarnings("unused") @Parameter(value = "value2", optional = false) final int value2) {
+        TestPage7(@Parameter(value = "value1", optional = true) final int value1,
+                @Parameter(value = "value2", optional = false) final int value2) {
             fail();
         }
 
@@ -249,8 +252,7 @@ public class GuicierPageFactoryTest {
      */
     public static class TestPage8 extends WebPage {
         @Inject
-        TestPage8(@Named("jfk") @SuppressWarnings("unused") final IConverter converter,
-                @Parameter("company") final String company) {
+        TestPage8(@Named("jfk") final IConverter converter, @Parameter("company") final String company) {
             assertEquals("jolira", company);
         }
     }
@@ -260,8 +262,7 @@ public class GuicierPageFactoryTest {
      */
     public static class TestPage9 extends WebPage {
         @Inject
-        TestPage9(@Named("jfk") @SuppressWarnings("unused") final IConverter converter,
-                @SuppressWarnings("unused") @Parameter("company") final Map<String, String> company) {
+        TestPage9(@Named("jfk") final IConverter converter, @Parameter("company") final Map<String, String> company) {
             fail();
         }
     }
@@ -368,6 +369,12 @@ public class GuicierPageFactoryTest {
         }
     }
 
+    /**
+     * @param <T>
+     * @param elements
+     *            element to be returned as a set
+     * @return return a set
+     */
     protected final static <T> Set<T> setOf(final T... elements) {
         final Set<T> result = Sets.newHashSet();
 
@@ -631,6 +638,9 @@ public class GuicierPageFactoryTest {
         factory.newPage(TestPage99.class);
     }
 
+    /**
+     * Test the {@link Multibinder} injection
+     */
     @Test
     public void testMultibinderInjectSet() {
         final Injector injector = Guice.createInjector(new AbstractModule() {
@@ -786,7 +796,7 @@ public class GuicierPageFactoryTest {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void testPageInjectWithParamsOnly() {
@@ -802,7 +812,7 @@ public class GuicierPageFactoryTest {
     }
 
     /**
-     * 
+     *
      */
     @Test
     public void testPageNoParameters() {

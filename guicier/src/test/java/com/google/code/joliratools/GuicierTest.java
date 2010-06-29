@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.google.code.joliratools;
 
@@ -24,7 +24,6 @@ import com.google.inject.Injector;
 
 /**
  * @author jfk
- * 
  */
 public class GuicierTest {
     private static class ParameterMock implements Parameter {
@@ -68,22 +67,25 @@ public class GuicierTest {
         ON, OFF
     }
 
+    /**
+     * A test object
+     */
     public static class TestObject {
         @Inject
-        public TestObject(@Parameter("x") final int x,
-                @SuppressWarnings("unused") final Object unused,
-                @Parameter(value = "y", optional = true) final long y,
-                @Nullable @Parameter("z") final String z) {
+        TestObject(@Parameter("x") final int x, final Object unused,
+                @Parameter(value = "y", optional = true) final long y, @Nullable @Parameter("z") final String z) {
             assertEquals(1, x);
             assertEquals(2, y);
             assertEquals("3", z);
         }
     }
 
+    /**
+     * A test object
+     */
     public static class TestObject2 {
         @Inject
-        public TestObject2(@Parameter("x") final float x,
-                @Parameter(value = "y", optional = true) final double y,
+        TestObject2(@Parameter("x") final float x, @Parameter(value = "y", optional = true) final double y,
                 @Parameter(value = "z", optional = true) final String z) {
             assertEquals(1, x, 0.0);
             assertEquals(0, y, 0.0);
@@ -91,13 +93,19 @@ public class GuicierTest {
         }
     }
 
+    /**
+     * A test object
+     */
     public static class TestObject3 {
         @Inject
-        public TestObject3(@Parameter("state") final State x) {
+        TestObject3(@Parameter("state") final State x) {
             assertEquals(State.OFF, x);
         }
     }
 
+    /**
+     * Test enum parameters
+     */
     @Test
     public void testGetEnumParameters() {
         final Injector injector = Guice.createInjector();
@@ -108,6 +116,9 @@ public class GuicierTest {
         assertEquals("OFF", params.get("state"));
     }
 
+    /**
+     * Test optional parameters
+     */
     @Test
     public void testGetOptionalParameters() {
         final Injector injector = Guice.createInjector();
@@ -119,7 +130,7 @@ public class GuicierTest {
     }
 
     /**
-     * Test method for {@link Guicier#get(PageParameters, Parameter, Class)}.
+     * Test method for Guicier#get(PageParameters, Parameter, Class, PageParameters).
      */
     @Test
     public void testGetPageParameters() {
@@ -131,13 +142,15 @@ public class GuicierTest {
 
         parameters.put("company", "jolira");
 
-        final PageParameters value = guicier.get(parameters, param,
-                PageParameters.class, cleansed);
+        final PageParameters value = guicier.get(parameters, param, PageParameters.class, cleansed);
 
         assertSame(cleansed, value);
         assertEquals(0, cleansed.size());
     }
 
+    /**
+     *
+     */
     @Test
     public void testGetParameters() {
         final Injector injector = Guice.createInjector();
@@ -151,13 +164,15 @@ public class GuicierTest {
         assertEquals("3", params.get("z"));
     }
 
+    /**
+     *
+     */
     @Test(expected = WicketRuntimeException.class)
     public void testGetTooManyParameters() {
         final Injector injector = Guice.createInjector();
         final Guicier guicier = injector.getInstance(Guicier.class);
         @SuppressWarnings("boxing")
-        final PageParameters params = guicier.get(TestObject.class, 1, 2l, "3",
-                4.0);
+        final PageParameters params = guicier.get(TestObject.class, 1, 2l, "3", 4.0);
 
         assertEquals(3, params.size());
         assertEquals("1", params.get("x"));
@@ -166,7 +181,7 @@ public class GuicierTest {
     }
 
     /**
-     * Test method for {@link Guicier#get(PageParameters, Parameter, Class)}.
+     * Test method for Guicier#get(PageParameters, Parameter, Class).
      */
     @Test(expected = WicketRuntimeException.class)
     public void testNoConverter() {
@@ -178,8 +193,7 @@ public class GuicierTest {
 
         parameters.put("company", "jolira");
 
-        final Object value = guicier
-                .get(parameters, param, Map.class, cleansed);
+        final Object value = guicier.get(parameters, param, Map.class, cleansed);
 
         assertSame(parameters, value);
         assertEquals(1, cleansed.size());
@@ -187,21 +201,19 @@ public class GuicierTest {
     }
 
     /**
-     * Test method for {@link Guicier#get(PageParameters, Parameter, Class)}.
+     * Test method for Guicier#get(PageParameters, Parameter, Class).
      */
     @Test
     public void testSpecificConverter() {
         final Injector injector = Guice.createInjector();
         final Guicier guicier = injector.getInstance(Guicier.class);
-        final Parameter param = new ParameterMock("company", false,
-                StringConverter.class);
+        final Parameter param = new ParameterMock("company", false, StringConverter.class);
         final PageParameters parameters = new PageParameters();
         final PageParameters cleansed = new PageParameters();
 
         parameters.put("company", "jolira");
 
-        final Object value = guicier.get(parameters, param, String.class,
-                cleansed);
+        final Object value = guicier.get(parameters, param, String.class, cleansed);
 
         assertEquals("jolira", value);
         assertEquals(1, cleansed.size());
@@ -209,7 +221,7 @@ public class GuicierTest {
     }
 
     /**
-     * Test method for {@link Guicier#get(PageParameters, Parameter, Class)}.
+     * Test method for Guicier#get(PageParameters, Parameter, Class).
      */
     @Test
     public void testStringArray0GetValue() {
@@ -221,8 +233,7 @@ public class GuicierTest {
 
         parameters.put("company", new String[0]);
 
-        final Object value = guicier.get(parameters, param, String.class,
-                cleansed);
+        final Object value = guicier.get(parameters, param, String.class, cleansed);
 
         assertNull(value);
         assertEquals(1, cleansed.size());
@@ -233,7 +244,7 @@ public class GuicierTest {
     }
 
     /**
-     * Test method for {@link Guicier#get(PageParameters, Parameter, Class)}.
+     * Test method for Guicier#get(PageParameters, Parameter, Class).
      */
     @Test
     public void testStringArray1GetValue() {
@@ -245,8 +256,7 @@ public class GuicierTest {
 
         parameters.put("value", new String[] { "jolira" });
 
-        final String value = guicier.get(parameters, param, String.class,
-                cleansed);
+        final String value = guicier.get(parameters, param, String.class, cleansed);
 
         assertEquals("jolira", value);
         assertEquals(1, cleansed.size());
@@ -258,7 +268,7 @@ public class GuicierTest {
     }
 
     /**
-     * Test method for {@link Guicier#get(PageParameters, Parameter, Class)}.
+     * Test method for Guicier#get(PageParameters, Parameter, Class).
      */
     @Test
     public void testStringArray3GetValue() {
@@ -270,8 +280,7 @@ public class GuicierTest {
 
         parameters.put("company", new String[] { "1", "2", "3" });
 
-        final String[] value = guicier.get(parameters, param, String[].class,
-                cleansed);
+        final String[] value = guicier.get(parameters, param, String[].class, cleansed);
 
         assertEquals(3, value.length);
         assertEquals("1", value[0]);
@@ -288,7 +297,7 @@ public class GuicierTest {
     }
 
     /**
-     * Test method for {@link Guicier#get(PageParameters, Parameter, Class)}.
+     * Test method for Guicier#get(PageParameters, Parameter, Class).
      */
     @Test
     public void testStringGetNullValue() {
@@ -297,15 +306,14 @@ public class GuicierTest {
         final Parameter param = new ParameterMock("company");
         final PageParameters parameters = new PageParameters();
         final PageParameters cleansed = new PageParameters();
-        final Object value = guicier.get(parameters, param, String.class,
-                cleansed);
+        final Object value = guicier.get(parameters, param, String.class, cleansed);
 
         assertNull(value);
         assertEquals(0, cleansed.size());
     }
 
     /**
-     * Test method for {@link Guicier#get(PageParameters, Parameter, Class)}.
+     * Test method for Guicier#get(PageParameters, Parameter, Class).
      */
     @Test
     public void testStringGetValue() {
@@ -317,8 +325,7 @@ public class GuicierTest {
 
         parameters.put("company", "jolira");
 
-        final Object value = guicier.get(parameters, param, String.class,
-                cleansed);
+        final Object value = guicier.get(parameters, param, String.class, cleansed);
 
         assertEquals("jolira", value);
         assertEquals(1, cleansed.size());

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.google.code.joliratools;
 
@@ -16,8 +16,7 @@ import org.apache.wicket.PageParameters;
 import org.apache.wicket.util.convert.IConverter;
 
 /**
- * Identifies a particular entry in a {@link PageParameters} object, which is
- * associated with a particular parameter.
+ * Identifies a particular entry in a {@link PageParameters} object, which is associated with a particular parameter.
  * 
  * @author jfk
  * @see PageParameters
@@ -26,17 +25,18 @@ import org.apache.wicket.util.convert.IConverter;
 @Retention(RUNTIME)
 @Documented
 public @interface Parameter {
+    /**
+     * @return specifies what converter should be used for this paramter.
+     */
     Class<? extends IConverter> converter() default IConverter.class;
 
     /**
-     * Specifies whether this parameter must be present in the
-     * {@link PageParameters} list.
+     * Specifies whether this parameter must be present in the {@link PageParameters} list.
      */
     boolean optional() default false;
 
     /**
-     * Identifies the name of the parameter. This is the string to used used as
-     * a key in {@link PageParameters}.
+     * Identifies the name of the parameter. This is the string to used used as a key in {@link PageParameters}.
      */
     String value();
 }

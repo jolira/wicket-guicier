@@ -308,7 +308,7 @@ public class Guicier {
      * @return the parameters
      */
     public PageParameters get(final Class<?> pageClass, final Object... args) {
-        final Constructor<?>[] constructors = pageClass.getConstructors();
+        final Constructor<?>[] constructors = pageClass.getDeclaredConstructors();
         final Locale locale = Locale.getDefault();
 
         for (final Constructor<?> constructor : constructors) {
