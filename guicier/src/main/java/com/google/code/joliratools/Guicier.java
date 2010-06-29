@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.google.code.joliratools;
 
@@ -93,6 +93,9 @@ public class Guicier {
 
     }
 
+    /**
+     * Convert booleans.
+     */
     public static class PrimitiveBooleanConverter extends BooleanConverter {
         private static final long serialVersionUID = -3890658188435687997L;
 
@@ -106,6 +109,9 @@ public class Guicier {
         }
     }
 
+    /**
+     * Convert bytes.
+     */
     public static class PrimitiveByteConverter extends ByteConverter {
         private static final long serialVersionUID = -2108916636178629276L;
 
@@ -119,6 +125,9 @@ public class Guicier {
         }
     }
 
+    /**
+     * Convert chars.
+     */
     public static class PrimitiveCharConverter extends CharacterConverter {
         private static final long serialVersionUID = 2848347198715860269L;
 
@@ -132,6 +141,9 @@ public class Guicier {
         }
     }
 
+    /**
+     * Convert doubles.
+     */
     public static class PrimitiveDoubleConverter extends DoubleConverter {
         private static final long serialVersionUID = -1963485530208715854L;
 
@@ -145,6 +157,9 @@ public class Guicier {
         }
     }
 
+    /**
+     * Convert floats.
+     */
     public static class PrimitiveFloatConverter extends FloatConverter {
         private static final long serialVersionUID = -4336506003120398278L;
 
@@ -158,6 +173,9 @@ public class Guicier {
         }
     }
 
+    /**
+     * Convert ints.
+     */
     public static class PrimitiveIntConverter extends IntegerConverter {
         private static final long serialVersionUID = 2912209049849424923L;
 
@@ -171,6 +189,9 @@ public class Guicier {
         }
     }
 
+    /**
+     * Convert longs.
+     */
     public static class PrimitiveLongConverter extends LongConverter {
         private static final long serialVersionUID = 8726058689616316514L;
 
@@ -184,6 +205,9 @@ public class Guicier {
         }
     }
 
+    /**
+     * Convert shorts.
+     */
     public static class PrimitiveShortConverter extends ShortConverter {
         private static final long serialVersionUID = -3491234864470269404L;
 
@@ -197,6 +221,9 @@ public class Guicier {
         }
     }
 
+    /**
+     * Convert strings.
+     */
     public static class StringConverter implements IConverter {
         private static final long serialVersionUID = 5221463436925128138L;
 
@@ -242,7 +269,7 @@ public class Guicier {
     private final Injector injector;
 
     @Inject
-    public Guicier(final Injector injector) {
+    Guicier(final Injector injector) {
         this.injector = injector;
     }
 
@@ -271,6 +298,15 @@ public class Guicier {
         return findMatchingParameter(idx + 1, arg, argClass, types, annos, params, locale);
     }
 
+    /**
+     * Create parameters
+     * 
+     * @param pageClass
+     *            the page class for which the parameters should be created
+     * @param args
+     *            the argument to be added to the {@link PageParameters}
+     * @return the parameters
+     */
     public PageParameters get(final Class<?> pageClass, final Object... args) {
         final Constructor<?>[] constructors = pageClass.getConstructors();
         final Locale locale = Locale.getDefault();
@@ -490,6 +526,15 @@ public class Guicier {
         return null;
     }
 
+    /**
+     * Returns the value that represents null.
+     * 
+     * @param <T>
+     *            the type of parameter
+     * @param type
+     *            the value type
+     * @return the value representing null for the given type
+     */
     @SuppressWarnings("unchecked")
     public <T> T getNullValue(final Class<T> type) {
         if (int.class.equals(type)) {
