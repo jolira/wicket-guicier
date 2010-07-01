@@ -26,6 +26,31 @@ import com.google.inject.Injector;
  * @author jfk
  */
 public class GuicierTest {
+    /**
+     * A test object annotated with {@link javax.inject.Inject}
+     */
+    public static class JavaxTestObject {
+        @javax.inject.Inject
+        JavaxTestObject(@Parameter("x") final int x, final Object unused,
+                @Parameter(value = "y", optional = true) final long y, @Nullable @Parameter("z") final String z) {
+            assertEquals(1, x);
+            assertEquals(2, y);
+            assertEquals("3", z);
+        }
+    }
+
+    /**
+     * A test object
+     */
+    public static class NoInjectTestObject {
+        NoInjectTestObject(@Parameter("x") final int x, final Object unused,
+                @Parameter(value = "y", optional = true) final long y, @Nullable @Parameter("z") final String z) {
+            assertEquals(1, x);
+            assertEquals(2, y);
+            assertEquals("3", z);
+        }
+    }
+
     private static class ParameterMock implements Parameter {
         private final String value;
         private final boolean optional;
@@ -181,6 +206,22 @@ public class GuicierTest {
     }
 
     /**
+     * Test enum parameters
+     */
+    @Test
+    public void testJavaxGetParameters() {
+        final Injector injector = Guice.createInjector();
+        final Guicier guicier = injector.getInstance(Guicier.class);
+        @SuppressWarnings("boxing")
+        final PageParameters params = guicier.get(JavaxTestObject.class, 1, 2l, "3");
+
+        assertEquals(3, params.size());
+        assertEquals("1", params.get("x"));
+        assertEquals("2", params.get("y"));
+        assertEquals("3", params.get("z"));
+    }
+
+    /**
      * Test method for Guicier#get(PageParameters, Parameter, Class).
      */
     @Test(expected = WicketRuntimeException.class)
@@ -198,6 +239,17 @@ public class GuicierTest {
         assertSame(parameters, value);
         assertEquals(1, cleansed.size());
         assertEquals("jolira", cleansed.get("company"));
+    }
+
+    /**
+     * Test what happens if there is no InjectStatement
+     */
+    @Test(expected = WicketRuntimeException.class)
+    public void testNoInjectStatement() {
+        final Injector injector = Guice.createInjector();
+        final Guicier guicier = injector.getInstance(Guicier.class);
+
+        guicier.get(NoInjectTestObject.class, Integer.valueOf(1), Long.valueOf(2l), "3");
     }
 
     /**

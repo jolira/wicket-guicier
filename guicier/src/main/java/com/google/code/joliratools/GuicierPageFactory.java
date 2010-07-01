@@ -1,22 +1,22 @@
 /**
- * 
+ *
  */
 package com.google.code.joliratools;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import org.apache.wicket.IPageFactory;
 import org.apache.wicket.Page;
 import org.apache.wicket.PageParameters;
 
-import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.Singleton;
 
 /**
  * @author jfk
- * 
  */
 @Singleton
 public class GuicierPageFactory implements IPageFactory {
@@ -25,8 +25,7 @@ public class GuicierPageFactory implements IPageFactory {
         private final Class<? extends Page> pageClass;
         private PageMaker delegate = null;
 
-        <C extends Page> PageCreatorProxy(final Injector injector,
-                final Class<C> pageClass) {
+        <C extends Page> PageCreatorProxy(final Injector injector, final Class<C> pageClass) {
             this.injector = injector;
             this.pageClass = pageClass;
         }
@@ -56,7 +55,6 @@ public class GuicierPageFactory implements IPageFactory {
      * 
      * @param injector
      *            the injector to be used to create new pages.
-     * 
      */
     @Inject
     public GuicierPageFactory(final Injector injector) {
@@ -67,8 +65,7 @@ public class GuicierPageFactory implements IPageFactory {
         this.injector = injector;
     }
 
-    private synchronized <C extends Page> PageMaker getCreator(
-            final Class<C> pageClass) {
+    private synchronized <C extends Page> PageMaker getCreator(final Class<C> pageClass) {
         final PageMaker creator = makerCache.get(pageClass);
 
         if (creator != null) {
@@ -91,12 +88,10 @@ public class GuicierPageFactory implements IPageFactory {
     }
 
     /**
-     * 
      * @see IPageFactory#newPage(Class, PageParameters)
      */
     @Override
-    public <C extends Page> Page newPage(final Class<C> pageClass,
-            final PageParameters parameters) {
+    public <C extends Page> Page newPage(final Class<C> pageClass, final PageParameters parameters) {
         final PageMaker creator = getCreator(pageClass);
 
         return creator.create(parameters);

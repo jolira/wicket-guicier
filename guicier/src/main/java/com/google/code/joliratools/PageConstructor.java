@@ -5,11 +5,12 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 
+import javax.inject.Inject;
+
 import org.apache.wicket.Page;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.WicketRuntimeException;
 
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
@@ -23,7 +24,7 @@ final class PageConstructor {
         final Class<?>[] paramTypes = constructor.getParameterTypes();
         final Parameter[] params = new Parameter[genericParamsTypes.length];
         final Provider<?>[] providers = new Provider<?>[genericParamsTypes.length];
-        final boolean injectAnnotationPresent = constructor.isAnnotationPresent(Inject.class);
+        final boolean injectAnnotationPresent = isAnnotationPresent(constructor);
 
         for (int idx = 0; idx < genericParamsTypes.length; idx++) {
             final Annotation[] annos = paramAnnotations[idx];
@@ -71,6 +72,11 @@ final class PageConstructor {
         }
 
         return null;
+    }
+
+    private static boolean isAnnotationPresent(final Constructor<Page> constructor) {
+        return constructor.isAnnotationPresent(Inject.class)
+                || constructor.isAnnotationPresent(com.google.inject.Inject.class);
     }
 
     private final boolean isDefault;

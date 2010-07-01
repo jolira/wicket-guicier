@@ -4,12 +4,15 @@
 package com.google.code.joliratools;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.WicketRuntimeException;
@@ -28,7 +31,6 @@ import org.apache.wicket.util.convert.converters.SqlDateConverter;
 import org.apache.wicket.util.convert.converters.SqlTimeConverter;
 import org.apache.wicket.util.convert.converters.SqlTimestampConverter;
 
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
@@ -312,6 +314,10 @@ public class Guicier {
         final Locale locale = Locale.getDefault();
 
         for (final Constructor<?> constructor : constructors) {
+            if (!isAnnotationPresent(constructor)) {
+                continue;
+            }
+
             final PageParameters result = get(constructor, args, locale);
 
             if (result != null) {
@@ -595,6 +601,10 @@ public class Guicier {
         final T converted = (T) converter.convertToObject(strValue, null);
 
         return converted;
+    }
+
+    private boolean isAnnotationPresent(final AnnotatedElement e) {
+        return e.isAnnotationPresent(Inject.class) || e.isAnnotationPresent(com.google.inject.Inject.class);
     }
 
     private void put(final PageParameters params, final Parameter param, final Object arg, final Class<?> type,

@@ -49,6 +49,19 @@ public class GuicierPageFactoryTest {
     }
 
     /**
+     * A simple test page with javax
+     */
+    public static class MyJavaxTest extends WebPage {
+        /**
+         * @param abcde
+         */
+        @javax.inject.Inject
+        public MyJavaxTest(@Named("abc") final Set<String> abcde) {
+            assertEquals(setOf("A", "B", "C"), abcde);
+        }
+    }
+
+    /**
      * A simple test page
      */
     public static class MyTest extends WebPage {
@@ -620,6 +633,28 @@ public class GuicierPageFactoryTest {
     @Test(expected = IllegalArgumentException.class)
     public void testInvalidArgument() {
         new GuicierPageFactory(null);
+    }
+
+    /**
+     * Test the javax {@link Multibinder} injection
+     */
+    @Test
+    public void testJavaxMultibinderInjectSet() {
+        final Injector injector = Guice.createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                Multibinder<String> multibinder = Multibinder.newSetBinder(binder(), String.class, Names.named("abc"));
+                multibinder.addBinding().toInstance("A");
+                multibinder.addBinding().toInstance("B");
+
+                multibinder = Multibinder.newSetBinder(binder(), String.class, Names.named("abc"));
+                multibinder.addBinding().toInstance("C");
+            }
+        });
+
+        final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
+
+        factory.newPage(MyJavaxTest.class);
     }
 
     /**
