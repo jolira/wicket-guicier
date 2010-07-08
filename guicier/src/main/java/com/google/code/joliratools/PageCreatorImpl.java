@@ -15,19 +15,19 @@ final class PageCreatorImpl implements PageMaker {
     private final PageConstructor paramsOnlyConstructor;
     private final PageConstructor[] annotatedConstructors;
     private final Class<? extends Page> pageClass;
+    private final Injector injector;
 
     <C extends Page> PageCreatorImpl(final Injector injector, final Class<C> cls) {
+        this.injector = injector;
         pageClass = cls;
         @SuppressWarnings("unchecked")
-        final Constructor<Page>[] constructors = (Constructor<Page>[]) cls
-                .getDeclaredConstructors();
+        final Constructor<Page>[] constructors = (Constructor<Page>[]) cls.getDeclaredConstructors();
         final Collection<PageConstructor> _annotatedConstructors = new ArrayList<PageConstructor>();
         PageConstructor _defaultConstructor = null;
         PageConstructor _paramsOnlyConstructor = null;
 
         for (final Constructor<Page> _constructor : constructors) {
-            final PageConstructor constructor = PageConstructor.get(injector,
-                    _constructor);
+            final PageConstructor constructor = PageConstructor.get(injector, _constructor);
 
             if (constructor == null) {
                 continue;
@@ -46,12 +46,19 @@ final class PageCreatorImpl implements PageMaker {
 
         defaultConstructor = _defaultConstructor;
         paramsOnlyConstructor = _paramsOnlyConstructor;
-        annotatedConstructors = _annotatedConstructors
-                .toArray(new PageConstructor[size]);
+        annotatedConstructors = _annotatedConstructors.toArray(new PageConstructor[size]);
     }
 
     @Override
     public Page create(final PageParameters parameters) {
+        final Page page = createPage(parameters);
+
+        injector.injectMembers(page);
+
+        return page;
+    }
+
+    private Page createPage(final PageParameters parameters) {
         int matchedCount = -1;
         PageConstructor matchedConstructor = null;
 
@@ -69,8 +76,7 @@ final class PageCreatorImpl implements PageMaker {
         }
 
         if (paramsOnlyConstructor != null) {
-            final PageParameters params = parameters == null ? new PageParameters()
-                    : parameters;
+            final PageParameters params = parameters == null ? new PageParameters() : parameters;
 
             return paramsOnlyConstructor.newInstance(params);
         }

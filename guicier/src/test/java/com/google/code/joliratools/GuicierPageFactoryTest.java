@@ -51,6 +51,30 @@ public class GuicierPageFactoryTest {
     /**
      * A simple test page with javax
      */
+    public static class MyJavaxMemberInjectionTest extends WebPage {
+        @Inject
+        @Named("abc")
+        Set<String> abcde;
+
+        /**
+         * @param abcde
+         */
+        @javax.inject.Inject
+        public MyJavaxMemberInjectionTest(@Named("abc") final Set<String> abcde) {
+            assertEquals(setOf("A", "B", "C"), abcde);
+        }
+
+        /**
+         * @return returns the injected set, if the test works
+         */
+        public Set<String> getAbcde() {
+            return abcde;
+        }
+    }
+
+    /**
+     * A simple test page with javax
+     */
     public static class MyJavaxTest extends WebPage {
         /**
          * @param abcde
@@ -655,6 +679,31 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
 
         factory.newPage(MyJavaxTest.class);
+    }
+
+    /**
+     * Test the javax {@link Multibinder} injection
+     */
+    @Test
+    public void testMemberInjection() {
+        final Injector injector = Guice.createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                Multibinder<String> multibinder = Multibinder.newSetBinder(binder(), String.class, Names.named("abc"));
+                multibinder.addBinding().toInstance("A");
+                multibinder.addBinding().toInstance("B");
+
+                multibinder = Multibinder.newSetBinder(binder(), String.class, Names.named("abc"));
+                multibinder.addBinding().toInstance("C");
+            }
+        });
+
+        final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
+        final MyJavaxMemberInjectionTest page = (MyJavaxMemberInjectionTest) factory
+                .newPage(MyJavaxMemberInjectionTest.class);
+        final Set<String> abcde = page.getAbcde();
+
+        assertEquals(setOf("A", "B", "C"), abcde);
     }
 
     /**
