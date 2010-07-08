@@ -15,10 +15,8 @@ final class PageCreatorImpl implements PageMaker {
     private final PageConstructor paramsOnlyConstructor;
     private final PageConstructor[] annotatedConstructors;
     private final Class<? extends Page> pageClass;
-    private final Injector injector;
 
     <C extends Page> PageCreatorImpl(final Injector injector, final Class<C> cls) {
-        this.injector = injector;
         pageClass = cls;
         @SuppressWarnings("unchecked")
         final Constructor<Page>[] constructors = (Constructor<Page>[]) cls.getDeclaredConstructors();
@@ -51,14 +49,6 @@ final class PageCreatorImpl implements PageMaker {
 
     @Override
     public Page create(final PageParameters parameters) {
-        final Page page = createPage(parameters);
-
-        injector.injectMembers(page);
-
-        return page;
-    }
-
-    private Page createPage(final PageParameters parameters) {
         int matchedCount = -1;
         PageConstructor matchedConstructor = null;
 
