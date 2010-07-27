@@ -8,6 +8,7 @@ import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -29,7 +30,6 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import com.google.inject.internal.Sets;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
@@ -389,7 +389,7 @@ public class GuicierPageFactoryTest {
      * @return return a set
      */
     protected final static <T> Set<T> setOf(final T... elements) {
-        final Set<T> result = Sets.newHashSet();
+        final Set<T> result = new HashSet<T>();
 
         result.addAll(Arrays.asList(elements));
 
