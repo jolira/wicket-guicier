@@ -40,12 +40,12 @@
     <dependency>
       <groupId>com.jolira</groupId>
       <artifactId>guice</artifactId>
-      <scope>compile</scope>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.jolira</groupId>
       <artifactId>multibindings</artifactId>
-      <scope>test</scope>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>
