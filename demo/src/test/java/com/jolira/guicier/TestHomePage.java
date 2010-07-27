@@ -4,9 +4,6 @@ import junit.framework.TestCase;
 
 import org.apache.wicket.util.tester.WicketTester;
 
-import com.jolira.guicier.HomePage;
-import com.jolira.guicier.WicketApplication;
-
 /**
  * Simple test using the WicketTester
  */
@@ -18,6 +15,9 @@ public class TestHomePage extends TestCase {
         tester = new WicketTester(new WicketApplication());
     }
 
+    /**
+     * Render the home page
+     */
     public void testRenderMyPage() {
         // start and render the test page
         tester.startPage(HomePage.class);
