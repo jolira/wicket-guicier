@@ -11,10 +11,8 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 
 /**
- * Application object for your web application. If you want to run this
- * application without deploying, run the Start class.
- * 
- * @see com.jolira.guicier.Start#main(String[])
+ * Application object for your web application. If you want to run this application without deploying, run the Start
+ * class.
  */
 public class WicketApplication extends WebApplication {
     /**
@@ -39,8 +37,7 @@ public class WicketApplication extends WebApplication {
                 // TODO
             }
         });
-        final IPageFactory pageFactory = injector
-                .getInstance(GuicierPageFactory.class);// new
+        final IPageFactory pageFactory = injector.getInstance(GuicierPageFactory.class);// new
         // GuicierPageFactory(injector);
 
         sessionSettings.setPageFactory(pageFactory);
