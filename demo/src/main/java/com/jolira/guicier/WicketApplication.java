@@ -15,19 +15,11 @@ import com.google.inject.Module;
  * class.
  */
 public class WicketApplication extends WebApplication {
-    /**
-     * @see org.apache.wicket.Application#getHomePage()
-     */
     @Override
     public Class<HomePage> getHomePage() {
         return HomePage.class;
     }
 
-    /**
-     * Install the Guicer version of the page factory..
-     * 
-     * @see WebApplication#init()
-     */
     @Override
     protected void init() {
         final ISessionSettings sessionSettings = getSessionSettings();
