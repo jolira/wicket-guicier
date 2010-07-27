@@ -25,7 +25,7 @@
   </properties>
   <modules>
     <module>guicier</module>
-    <module>demo</module>
+    <!--module>demo</module-->
   </modules>
   <dependencyManagement>
     <dependencies>
