@@ -49,6 +49,17 @@ public class GuicierPageFactoryTest {
     }
 
     /**
+     * Interface for testing
+     */
+    public interface IJolira {
+        // nothing
+    }
+
+    final class Jolira implements IJolira {
+        // nothing
+    }
+
+    /**
      * A simple test page with javax
      */
     public static class MyJavaxTest extends WebPage {
@@ -379,6 +390,16 @@ public class GuicierPageFactoryTest {
             assertEquals(2, params.size());
             assertEquals("jolira2", params.get("company2"));
             assertEquals("jolira1", params.get("company1"));
+        }
+    }
+
+    /**
+     * Test something
+     */
+    public static class TestPageWithComplexObject extends WebPage {
+        @Inject
+        TestPageWithComplexObject(@Parameter("company1") final IJolira jolira) {
+            assertNotNull(jolira);
         }
     }
 
@@ -871,6 +892,22 @@ public class GuicierPageFactoryTest {
         params.put("company2", "jolira2");
 
         final Page page = factory.newPage(TestPageParamOnly.class, params);
+
+        assertNotNull(page);
+    }
+
+    /**
+     * Test something
+     */
+    @Test
+    public void testPageParametersWithAnComplexObject() {
+        final Injector injector = Guice.createInjector();
+        final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
+        final PageParameters params = new PageParameters();
+
+        params.put("company1", new Jolira());
+
+        final Page page = factory.newPage(TestPageWithComplexObject.class, params);
 
         assertNotNull(page);
     }
