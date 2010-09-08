@@ -1,4 +1,4 @@
-package com.google.code.joliratools;
+package com.google.code.joliratools.guicier;
 
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.markup.html.WebPage;

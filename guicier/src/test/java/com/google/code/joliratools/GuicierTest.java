@@ -30,6 +30,9 @@ public class GuicierTest {
      * A test object annotated with {@link javax.inject.Inject}
      */
     public static class JavaxTestObject {
+        /**
+         * @param unused
+         */
         @javax.inject.Inject
         JavaxTestObject(@Parameter("x") final int x, final Object unused,
                 @Parameter(value = "y", optional = true) final long y, @Nullable @Parameter("z") final String z) {
@@ -43,6 +46,9 @@ public class GuicierTest {
      * A test object
      */
     public static class NoInjectTestObject {
+        /**
+         * @param unused
+         */
         NoInjectTestObject(@Parameter("x") final int x, final Object unused,
                 @Parameter(value = "y", optional = true) final long y, @Nullable @Parameter("z") final String z) {
             assertEquals(1, x);
@@ -96,6 +102,9 @@ public class GuicierTest {
      * A test object
      */
     public static class TestObject {
+        /**
+         * @param unused
+         */
         @Inject
         TestObject(@Parameter("x") final int x, final Object unused,
                 @Parameter(value = "y", optional = true) final long y, @Nullable @Parameter("z") final String z) {

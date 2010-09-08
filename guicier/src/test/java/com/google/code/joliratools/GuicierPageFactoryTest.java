@@ -107,6 +107,9 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage0 extends WebPage {
+        /**
+         * @param converter
+         */
         @Inject
         TestPage0(final IConverter converter) {
             fail();
@@ -216,6 +219,10 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage7 extends WebPage {
+        /**
+         * @param value1
+         * @param value2
+         */
         @Inject
         TestPage7(@Parameter(value = "value1", optional = true) final int value1,
                 @Parameter(value = "value2", optional = false) final int value2) {
@@ -275,6 +282,9 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage8 extends WebPage {
+        /**
+         * @param converter
+         */
         @Inject
         TestPage8(@Named("jfk") final IConverter converter, @Parameter("company") final String company) {
             assertEquals("jolira", company);
@@ -285,6 +295,10 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage9 extends WebPage {
+        /**
+         * @param converter
+         * @param company
+         */
         @Inject
         TestPage9(@Named("jfk") final IConverter converter, @Parameter("company") final Map<String, String> company) {
             fail();
