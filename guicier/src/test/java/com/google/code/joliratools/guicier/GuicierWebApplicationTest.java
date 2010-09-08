@@ -177,6 +177,6 @@ public class GuicierWebApplicationTest {
 
         tester.startPage(TestPage.class);
         app.resetInjector();
-        tester.startPage(TestPage.class);
+        tester.startPage(TestPage.class, new PageParameters());
     }
 }

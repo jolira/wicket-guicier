@@ -18,12 +18,6 @@ import com.google.inject.Injector;
  * @since 1.0
  */
 abstract class GuicierPageFactoryProxy implements IPageFactory {
-    private IPageFactory getFactory() {
-        final Injector i = getInjector();
-
-        return i.getInstance(GuicierPageFactory.class);
-    }
-
     abstract Injector getInjector();
 
     /**
@@ -31,9 +25,7 @@ abstract class GuicierPageFactoryProxy implements IPageFactory {
      */
     @Override
     public <C extends Page> Page newPage(final Class<C> pageClass) {
-        final IPageFactory factory = getFactory();
-
-        return factory.newPage(pageClass);
+        return newPage(pageClass, null);
     }
 
     /**
@@ -41,7 +33,8 @@ abstract class GuicierPageFactoryProxy implements IPageFactory {
      */
     @Override
     public <C extends Page> Page newPage(final Class<C> pageClass, final PageParameters parameters) {
-        final IPageFactory factory = getFactory();
+        final Injector i = getInjector();
+        final IPageFactory factory = i.getInstance(GuicierPageFactory.class);
 
         return factory.newPage(pageClass, parameters);
     }
