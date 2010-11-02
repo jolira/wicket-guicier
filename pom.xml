@@ -2,7 +2,7 @@
   <parent>
     <artifactId>superpom</artifactId>
     <groupId>com.jolira</groupId>
-    <version>1.0.9</version>
+    <version>1.0.12</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>wicket-guicier-parent</artifactId>
@@ -20,9 +20,9 @@
     </license>
   </licenses>
   <properties>
-    <wicket.version>1.4.10</wicket.version>
-    <guice.version>2.1.1</guice.version>
-    <jetty.version>6.1.24</jetty.version>
+    <wicket.version>1.4.12</wicket.version>
+    <guice.version>2.1.8</guice.version>
+    <jetty.version>7.1.6.v20100715</jetty.version>
     <junit.version>4.8.1</junit.version>
     <slf4j.version>1.6.1</slf4j.version>
   </properties>
