@@ -360,10 +360,11 @@ public class Guicier {
         return params;
     }
 
-    <T> T get(final PageParameters parameters, final Parameter param, final Class<T> type, final PageParameters cleansed) {
+    <T> T get(final PageParameters parameters, final Parameter param, final Class<T> type,
+            final PageParameters cleansed, final boolean isFirst) {
         if (PageParameters.class.isAssignableFrom(type)) {
             @SuppressWarnings("unchecked")
-            final T params = (T) cleansed;
+            final T params = isFirst ? (T) parameters : (T) cleansed;
 
             return params;
         }
@@ -420,7 +421,7 @@ public class Guicier {
             throw new WicketRuntimeException("please specify a converter " + param + " of type " + type);
         }
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({ "rawtypes", "unchecked" })
         final EnumConverter<?> converter = new EnumConverter(type);
 
         return converter;

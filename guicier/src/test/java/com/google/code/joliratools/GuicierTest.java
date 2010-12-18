@@ -176,10 +176,14 @@ public class GuicierTest {
 
         parameters.put("company", "jolira");
 
-        final PageParameters value = guicier.get(parameters, param, PageParameters.class, cleansed);
+        final PageParameters value1 = guicier.get(parameters, param, PageParameters.class, cleansed, false);
 
-        assertSame(cleansed, value);
+        assertSame(cleansed, value1);
         assertEquals(0, cleansed.size());
+
+        final PageParameters value2 = guicier.get(parameters, param, PageParameters.class, cleansed, true);
+
+        assertSame(parameters, value2);
     }
 
     /**
@@ -243,7 +247,7 @@ public class GuicierTest {
 
         parameters.put("company", "jolira");
 
-        final Object value = guicier.get(parameters, param, Map.class, cleansed);
+        final Object value = guicier.get(parameters, param, Map.class, cleansed, false);
 
         assertSame(parameters, value);
         assertEquals(1, cleansed.size());
@@ -274,7 +278,7 @@ public class GuicierTest {
 
         parameters.put("company", "jolira");
 
-        final Object value = guicier.get(parameters, param, String.class, cleansed);
+        final Object value = guicier.get(parameters, param, String.class, cleansed, false);
 
         assertEquals("jolira", value);
         assertEquals(1, cleansed.size());
@@ -294,7 +298,7 @@ public class GuicierTest {
 
         parameters.put("company", new String[0]);
 
-        final Object value = guicier.get(parameters, param, String.class, cleansed);
+        final Object value = guicier.get(parameters, param, String.class, cleansed, false);
 
         assertNull(value);
         assertEquals(1, cleansed.size());
@@ -317,7 +321,7 @@ public class GuicierTest {
 
         parameters.put("value", new String[] { "jolira" });
 
-        final String value = guicier.get(parameters, param, String.class, cleansed);
+        final String value = guicier.get(parameters, param, String.class, cleansed, false);
 
         assertEquals("jolira", value);
         assertEquals(1, cleansed.size());
@@ -341,7 +345,7 @@ public class GuicierTest {
 
         parameters.put("company", new String[] { "1", "2", "3" });
 
-        final String[] value = guicier.get(parameters, param, String[].class, cleansed);
+        final String[] value = guicier.get(parameters, param, String[].class, cleansed, false);
 
         assertEquals(3, value.length);
         assertEquals("1", value[0]);
@@ -367,7 +371,7 @@ public class GuicierTest {
         final Parameter param = new ParameterMock("company");
         final PageParameters parameters = new PageParameters();
         final PageParameters cleansed = new PageParameters();
-        final Object value = guicier.get(parameters, param, String.class, cleansed);
+        final Object value = guicier.get(parameters, param, String.class, cleansed, false);
 
         assertNull(value);
         assertEquals(0, cleansed.size());
@@ -386,7 +390,7 @@ public class GuicierTest {
 
         parameters.put("company", "jolira");
 
-        final Object value = guicier.get(parameters, param, String.class, cleansed);
+        final Object value = guicier.get(parameters, param, String.class, cleansed, false);
 
         assertEquals("jolira", value);
         assertEquals(1, cleansed.size());

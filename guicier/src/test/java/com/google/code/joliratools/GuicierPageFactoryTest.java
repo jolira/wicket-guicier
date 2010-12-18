@@ -351,7 +351,7 @@ public class GuicierPageFactoryTest {
     public static class TestPageInjectWithParamsOnly extends WebPage {
         @Inject
         TestPageInjectWithParamsOnly(final PageParameters params) {
-            assertEquals(0, params.size());
+            assertEquals(1, params.size());
         }
     }
 
@@ -414,6 +414,23 @@ public class GuicierPageFactoryTest {
         @Inject
         TestPageWithComplexObject(@Parameter("company1") final IJolira jolira) {
             assertNotNull(jolira);
+        }
+    }
+
+    /**
+     * Test uncleansed parameters
+     */
+    public static class TestUncleansedParams extends WebPage {
+        @Inject
+        TestUncleansedParams(final PageParameters uncleansed, @Parameter(value = "offset") final short offset,
+                final PageParameters cleansed) {
+            assertEquals(3, uncleansed.size());
+            assertEquals(1, cleansed.size());
+            assertEquals("0", uncleansed.getString("offset"));
+            assertEquals("a", uncleansed.getString("a"));
+            assertEquals("b", uncleansed.getString("b"));
+            assertEquals("0", cleansed.getString("offset"));
+            assertEquals(0, offset, 0);
         }
     }
 
@@ -936,5 +953,21 @@ public class GuicierPageFactoryTest {
         final Page page = factory.newPage(TestPageNullParam.class);
 
         assertNotNull(page);
+    }
+
+    /**
+     * Test something
+     */
+    @Test
+    public void testUncleansedParams() {
+        final Injector injector = Guice.createInjector();
+        final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
+        final PageParameters params = new PageParameters();
+
+        params.put("offset", "0");
+        params.put("a", "a");
+        params.put("b", "b");
+
+        factory.newPage(TestUncleansedParams.class, params);
     }
 }

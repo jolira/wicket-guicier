@@ -188,7 +188,7 @@ final class PageConstructor {
                 final Parameter param = params[idx];
                 final Class<?> cls = parameterTypes[idx];
 
-                args[idx] = gpp.get(parameters, param, cls, cleansed);
+                args[idx] = gpp.get(parameters, param, cls, cleansed, idx == 0);
             }
         }
 
