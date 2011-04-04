@@ -1,6 +1,8 @@
 /**
- * Copyright (c) 2010 jolira. All rights reserved. This program and the accompanying materials are made available under
- * the terms of the GNU Public License 2.0 which is available at http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * Copyright (c) 2010 jolira. All rights reserved. This program and the
+ * accompanying materials are made available under the terms of the GNU Public
+ * License 2.0 which is available at
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
 package com.google.code.joliratools.guicier;
@@ -51,11 +53,13 @@ public abstract class GuicierWebApplication extends WebApplication {
     }
 
     /**
-     * Checks whether an injector already exists and create a new one if necessary using the
-     * {@link #create(Stage, Module...)} call. The {@code state} parameter is determined by calling
+     * Checks whether an injector already exists and create a new one if
+     * necessary using the {@link #create(Stage, Module...)} call. The
+     * {@code state} parameter is determined by calling
      * {@link GuicierWebApplication#getConfigurationType()}.
      * <p>
-     * Once the injector is created, the {@link GuicierPageFactory} is installed as the page factory.
+     * Once the injector is created, the {@link GuicierPageFactory} is installed
+     * as the page factory.
      * 
      * @return the injector used by the application
      */
@@ -88,7 +92,8 @@ public abstract class GuicierWebApplication extends WebApplication {
     }
 
     /**
-     * Installs the {@link GuicierPageFactory} and a customized {@link IComponentInstantiationListener}.
+     * Installs the {@link GuicierPageFactory} and a customized
+     * {@link IComponentInstantiationListener}.
      * 
      * @see WebApplication#init()
      */
@@ -135,8 +140,10 @@ public abstract class GuicierWebApplication extends WebApplication {
     }
 
     /**
-     * Provides access to the request scoped provider. Accesses the request cycle and tries to retrieve values from the
-     * {@link GuicierWebRequestCycle}. Ha to be overridden if we are not using this type of cycle.
+     * Provides access to the request scoped provider. Accesses the request
+     * cycle and tries to retrieve values from the
+     * {@link GuicierWebRequestCycle}. Ha to be overridden if we are not using
+     * this type of cycle.
      * 
      * @param <T>
      *            the type of the requested object.
@@ -147,21 +154,31 @@ public abstract class GuicierWebApplication extends WebApplication {
      * @return the provider
      */
     protected <T> Provider<T> requestScoped(final Key<T> key, final Provider<T> unscoped) {
-        final GuicierWebRequestCycle cycle = GuicierWebRequestCycle.get();
+        return new Provider<T>() {
+            @Override
+            public T get() {
+                final GuicierWebRequestCycle cycle = GuicierWebRequestCycle.get();
+                final Provider<T> provider = cycle.scope(key, unscoped);
 
-        return cycle.scope(key, unscoped);
+                return provider.get();
+            }
+
+        };
     }
 
     /**
-     * Resets the injector by nullifying it. A new injector will be created next time {@link #getInjector()} is called.
+     * Resets the injector by nullifying it. A new injector will be created next
+     * time {@link #getInjector()} is called.
      */
     protected final void resetInjector() {
         injector = null;
     }
 
     /**
-     * Provides access to the session scoped provider. Accesses the request cycle and tries to retrieve values from the
-     * {@link GuicierWebRequestCycle}. Ha to be overridden if we are not using this type of cycle.
+     * Provides access to the session scoped provider. Accesses the request
+     * cycle and tries to retrieve values from the
+     * {@link GuicierWebRequestCycle}. Ha to be overridden if we are not using
+     * this type of cycle.
      * 
      * @param <T>
      *            the type of the requested object.
@@ -172,8 +189,15 @@ public abstract class GuicierWebApplication extends WebApplication {
      * @return the provider
      */
     protected <T> Provider<T> sessionScoped(final Key<T> key, final Provider<T> unscoped) {
-        final GuicierWebSession cycle = GuicierWebSession.get();
+        return new Provider<T>() {
 
-        return cycle.scope(key, unscoped);
+            @Override
+            public T get() {
+                final GuicierWebSession cycle = GuicierWebSession.get();
+                final Provider<T> provider = cycle.scope(key, unscoped);
+
+                return provider.get();
+            }
+        };
     }
 }

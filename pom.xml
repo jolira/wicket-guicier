@@ -20,11 +20,11 @@
     </license>
   </licenses>
   <properties>
-    <wicket.version>1.4.14</wicket.version>
-    <guice.version>2.1.8</guice.version>
-    <jetty.version>7.1.6.v20100715</jetty.version>
+    <wicket.version>1.4.17</wicket.version>
+    <guice.version>3.0.0</guice.version>
+    <jetty.version>7.3.1.v20110307</jetty.version>
     <junit.version>4.8.1</junit.version>
-    <slf4j.version>1.6.1</slf4j.version>
+    <slf4j.version>1.5.8</slf4j.version>
   </properties>
   <modules>
     <module>guicier</module>
