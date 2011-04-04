@@ -83,11 +83,11 @@
     </plugins>
   </build>
   <scm>
-    <connection>scm:svn:https://jolira-tools.googlecode.com/svn/superpom/tags/wicket-guicier-parent-1.1.3
+    <connection>scm:svn:https://jolira-tools.googlecode.com/svn/superpom/trunk
     </connection>
-    <developerConnection>scm:svn:https://jolira-tools.googlecode.com/svn/superpom/tags/wicket-guicier-parent-1.1.3
+    <developerConnection>scm:svn:https://jolira-tools.googlecode.com/svn/superpom/trunk
     </developerConnection>
-    <url>https://jolira-tools.googlecode.com/svn/superpom/tags/wicket-guicier-parent-1.1.3
+    <url>https://jolira-tools.googlecode.com/svn/superpom/trunk
     </url>
   </scm>
 </project>
