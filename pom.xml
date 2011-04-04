@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>wicket-guicier-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.1.18-SNAPSHOT</version>
+  <version>1.1.25</version>
   <name>Wicket Guicier Parent</name>
   <description>A resplacement for wicket-guice that uses constructor injection as an alternative to the excessive use of PageParameters.</description>
   <licenses>
@@ -82,11 +82,11 @@
     </plugins>
   </build>
   <scm>
-    <connection>scm:svn:https://jolira-tools.googlecode.com/svn/wicket-guicier/trunk
+    <connection>scm:svn:https://jolira-tools.googlecode.com/svn/wicket-guicier/tags/wicket-guicier-parent-1.1.25
     </connection>
-    <developerConnection>scm:svn:https://jolira-tools.googlecode.com/svn/wicket-guicier/trunk
+    <developerConnection>scm:svn:https://jolira-tools.googlecode.com/svn/wicket-guicier/tags/wicket-guicier-parent-1.1.25
     </developerConnection>
-    <url>https://jolira-tools.googlecode.com/svn/wicket-guicier/trunk
+    <url>https://jolira-tools.googlecode.com/svn/wicket-guicier/tags/wicket-guicier-parent-1.1.25
     </url>
   </scm>
 </project>
