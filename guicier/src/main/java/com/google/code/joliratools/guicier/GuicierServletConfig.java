@@ -32,7 +32,7 @@ import com.google.inject.spi.TypeConverterBinding;
  * @since 1.0
  * 
  */
-public abstract class WicketGucierServletConfig extends GuiceServletContextListener {
+public abstract class GuicierServletConfig extends GuiceServletContextListener {
     Injector delegate = null;
     private final Injector injector = new Injector() {
         @Override
@@ -252,7 +252,7 @@ public abstract class WicketGucierServletConfig extends GuiceServletContextListe
     /**
      * Resets the injector by nullifying it. A new injector will be created next time {@link #getInjector()} is called.
      */
-    void resetInjector() {
+    protected void resetInjector() {
         delegate = null;
     }
 

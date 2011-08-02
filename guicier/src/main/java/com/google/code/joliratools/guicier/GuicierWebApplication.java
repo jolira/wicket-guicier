@@ -29,7 +29,6 @@ import com.google.inject.Injector;
  */
 public abstract class GuicierWebApplication extends WebApplication {
     private final Injector injector;
-    private final InjectorResetter resetter;
 
     /**
      * Create a new application.
@@ -40,9 +39,8 @@ public abstract class GuicierWebApplication extends WebApplication {
      *            the resetter
      */
     @Inject
-    protected GuicierWebApplication(final Injector injector, final InjectorResetter resetter) {
+    protected GuicierWebApplication(final Injector injector) {
         this.injector = injector;
-        this.resetter = resetter;
     }
 
     /**
@@ -97,12 +95,5 @@ public abstract class GuicierWebApplication extends WebApplication {
     @Override
     public Session newSession(final Request request, final Response response) {
         return new GuicierWebSession(request);
-    }
-
-    /**
-     * Resets the injector by nullifying it. A new injector will be created next time {@link #getInjector()} is called.
-     */
-    protected final void resetInjector() {
-        resetter.reset();
     }
 }

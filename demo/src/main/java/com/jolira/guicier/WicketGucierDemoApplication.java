@@ -3,7 +3,6 @@ package com.jolira.guicier;
 import javax.inject.Inject;
 
 import com.google.code.joliratools.guicier.GuicierWebApplication;
-import com.google.code.joliratools.guicier.InjectorResetter;
 import com.google.inject.Injector;
 
 /**
@@ -12,8 +11,8 @@ import com.google.inject.Injector;
  */
 public class WicketGucierDemoApplication extends GuicierWebApplication {
     @Inject
-    WicketGucierDemoApplication(final Injector injector, InjectorResetter resetter) {
-        super(injector, resetter);
+    WicketGucierDemoApplication(final Injector injector) {
+        super(injector);
     }
 
     @Override

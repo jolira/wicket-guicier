@@ -8,14 +8,14 @@
 
 package com.jolira.guicier;
 
-import com.google.code.joliratools.guicier.WicketGucierServletConfig;
+import com.google.code.joliratools.guicier.GuicierServletConfig;
 import com.google.inject.Stage;
 
 /**
  * Create a development injector
  *
  */
-public class DemoWicketGucierServletConfig extends WicketGucierServletConfig {
+public class DemoWicketGucierServletConfig extends GuicierServletConfig {
     @Override
     protected Stage getConfigurationType() {
         return Stage.DEVELOPMENT;
