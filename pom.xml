@@ -82,10 +82,8 @@
     </plugins>
   </build>
   <scm>
-    <connection>git@github.com:jolira/wicket-guicier.git
-    </connection>
-    <developerConnection>git@github.com:jolira/wicket-guicier.git
-    </developerConnection>
+    <connection>scm:git:git@github.com:jolira/wicket-guicier.git</connection>
+    <developerConnection>scm:git:git@github.com:jolira/wicket-guicier.git</developerConnection>
     <url>https://github.com/jolira/wicket-guicier
     </url>
   </scm>
