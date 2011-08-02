@@ -21,7 +21,7 @@ import org.apache.wicket.util.convert.IConverter;
  * @author jfk
  * @see PageParameters
  */
-@Target( { PARAMETER, CONSTRUCTOR, FIELD })
+@Target({ PARAMETER, CONSTRUCTOR, FIELD })
 @Retention(RUNTIME)
 @Documented
 public @interface Parameter {

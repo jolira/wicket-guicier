@@ -8,7 +8,7 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
  * For testing only
  */
 public class HomePage extends WebPage {
-    public HomePage() {
+    HomePage() {
         final PageParameters params = new PageParameters();
 
         params.put("offset", "15");

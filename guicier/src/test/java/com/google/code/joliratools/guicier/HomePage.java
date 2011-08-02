@@ -18,8 +18,7 @@ public class HomePage extends WebPage {
      *            Page parameters
      */
     public HomePage(final PageParameters parameters) {
-        final Link<String> homeLink = new BookmarkablePageLink<String>("home",
-                HomePage.class);
+        final Link<String> homeLink = new BookmarkablePageLink<String>("home", HomePage.class);
 
         add(homeLink);
     }

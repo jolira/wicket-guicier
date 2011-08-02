@@ -1,0 +1,10 @@
+.classpath
+.project
+target
+.settings
+.svn
+bin
+MANIFEST.MF
+CVS
+.cvsignore
+*.log
