@@ -241,6 +241,11 @@ public abstract class GuicierServletConfig extends GuiceServletContextListener {
             @Override
             public T get() {
                 final GuicierWebRequestCycle cycle = GuicierWebRequestCycle.get();
+
+                if (cycle == null) {
+                    return unscoped.get();
+                }
+
                 final Provider<T> provider = cycle.scope(key, unscoped);
 
                 return provider.get();
@@ -274,6 +279,11 @@ public abstract class GuicierServletConfig extends GuiceServletContextListener {
             @Override
             public T get() {
                 final GuicierWebSession cycle = GuicierWebSession.get();
+
+                if (cycle == null) {
+                    return unscoped.get();
+                }
+
                 final Provider<T> provider = cycle.scope(key, unscoped);
 
                 return provider.get();
