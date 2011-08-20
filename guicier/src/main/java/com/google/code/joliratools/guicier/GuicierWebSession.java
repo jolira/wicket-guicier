@@ -44,7 +44,7 @@ public class GuicierWebSession extends WebSession {
         final WebRequestCycle requestCycle = (WebRequestCycle) RequestCycle.get();
         final WebRequest webRequest = requestCycle.getWebRequest();
         final HttpServletRequest httpServletRequest = webRequest.getHttpServletRequest();
-        final HttpSession session = httpServletRequest.getSession();
+        final HttpSession session = httpServletRequest.getSession(true);
 
         @SuppressWarnings("unchecked")
         Map<Key<?>, Provider<?>> cachedProviders = (Map<Key<?>, Provider<?>>) session

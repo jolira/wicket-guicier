@@ -5,24 +5,15 @@
 
 package com.google.code.joliratools.guicier;
 
-import java.lang.annotation.Annotation;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.code.joliratools.plugins.PluginManager;
 import com.google.inject.Binder;
-import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import com.google.inject.MembersInjector;
 import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
 import com.google.inject.Stage;
-import com.google.inject.TypeLiteral;
 import com.google.inject.servlet.GuiceServletContextListener;
-import com.google.inject.spi.TypeConverterBinding;
 
 /**
  * Creates the injector, which can be reset. Also binds the different scopes.
@@ -33,135 +24,6 @@ import com.google.inject.spi.TypeConverterBinding;
  * 
  */
 public abstract class GuicierServletConfig extends GuiceServletContextListener {
-    Injector delegate = null;
-    private final Injector injector = new Injector() {
-        @Override
-        public Injector createChildInjector(final Iterable<? extends Module> modules) {
-            final Injector i = getDelegate();
-
-            return i.createChildInjector(modules);
-        }
-
-        @Override
-        public Injector createChildInjector(final Module... modules) {
-            final Injector i = getDelegate();
-
-            return i.createChildInjector(modules);
-        }
-
-        @Override
-        public <T> List<Binding<T>> findBindingsByType(final TypeLiteral<T> type) {
-            final Injector i = getDelegate();
-
-            return i.findBindingsByType(type);
-        }
-
-        @Override
-        public Map<Key<?>, Binding<?>> getAllBindings() {
-            final Injector i = getDelegate();
-
-            return i.getAllBindings();
-        }
-
-        @Override
-        public <T> Binding<T> getBinding(final Class<T> type) {
-            final Injector i = getDelegate();
-
-            return i.getBinding(type);
-        }
-
-        @Override
-        public <T> Binding<T> getBinding(final Key<T> key) {
-            final Injector i = getDelegate();
-
-            return i.getBinding(key);
-        }
-
-        @Override
-        public Map<Key<?>, Binding<?>> getBindings() {
-            final Injector i = getDelegate();
-
-            return i.getBindings();
-        }
-
-        @Override
-        public <T> Binding<T> getExistingBinding(final Key<T> key) {
-            final Injector i = getDelegate();
-
-            return i.getExistingBinding(key);
-        }
-
-        @Override
-        public <T> T getInstance(final Class<T> type) {
-            final Injector i = getDelegate();
-
-            return i.getInstance(type);
-        }
-
-        @Override
-        public <T> T getInstance(final Key<T> key) {
-            final Injector i = getDelegate();
-
-            return i.getInstance(key);
-        }
-
-        @Override
-        public <T> MembersInjector<T> getMembersInjector(final Class<T> type) {
-            final Injector i = getDelegate();
-
-            return i.getMembersInjector(type);
-        }
-
-        @Override
-        public <T> MembersInjector<T> getMembersInjector(final TypeLiteral<T> typeLiteral) {
-            final Injector i = getDelegate();
-
-            return i.getMembersInjector(typeLiteral);
-        }
-
-        @Override
-        public Injector getParent() {
-            final Injector i = getDelegate();
-
-            return i.getParent();
-        }
-
-        @Override
-        public <T> Provider<T> getProvider(final Class<T> type) {
-            final Injector i = getDelegate();
-
-            return i.getProvider(type);
-        }
-
-        @Override
-        public <T> Provider<T> getProvider(final Key<T> key) {
-            final Injector i = getDelegate();
-
-            return i.getProvider(key);
-        }
-
-        @Override
-        public Map<Class<? extends Annotation>, Scope> getScopeBindings() {
-            final Injector i = getDelegate();
-
-            return i.getScopeBindings();
-        }
-
-        @Override
-        public Set<TypeConverterBinding> getTypeConverterBindings() {
-            final Injector i = getDelegate();
-
-            return i.getTypeConverterBindings();
-        }
-
-        @Override
-        public void injectMembers(final Object instance) {
-            final Injector i = getDelegate();
-
-            i.injectMembers(instance);
-        }
-    };
-
     /**
      * Creates a new injector. Should be overridden for unit test environments.
      * 
@@ -182,23 +44,13 @@ public abstract class GuicierServletConfig extends GuiceServletContextListener {
      */
     protected abstract Stage getConfigurationType();
 
-    synchronized Injector getDelegate() {
-        final Injector _delegate = delegate;
-
-        if (_delegate != null) {
-            return _delegate;
-        }
-
+    @Override
+    protected Injector getInjector() {
         final Stage stage = getConfigurationType();
-        final Injector i = create(stage, new Module() {
+
+        return create(stage, new Module() {
             @Override
             public void configure(final Binder binder) {
-                binder.bind(InjectorResetter.class).toInstance(new InjectorResetter() {
-                    @Override
-                    public void reset() {
-                        delegate = null;
-                    }
-                });
                 binder.bindScope(RequestScoped.class, new Scope() {
                     @Override
                     public <T> Provider<T> scope(final Key<T> key, final Provider<T> unscoped) {
@@ -213,15 +65,6 @@ public abstract class GuicierServletConfig extends GuiceServletContextListener {
                 });
             }
         });
-
-        delegate = i;
-
-        return i;
-    }
-
-    @Override
-    protected Injector getInjector() {
-        return injector;
     }
 
     /**
@@ -252,13 +95,6 @@ public abstract class GuicierServletConfig extends GuiceServletContextListener {
             }
 
         };
-    }
-
-    /**
-     * Resets the injector by nullifying it. A new injector will be created next time {@link #getInjector()} is called.
-     */
-    protected void resetInjector() {
-        delegate = null;
     }
 
     /**
