@@ -111,16 +111,6 @@ final class PageConstructor {
         this.parameterTypes = parameterTypes;
     }
 
-    private Throwable getCause(final Throwable e) {
-        final Throwable cause = e.getCause();
-
-        if (cause == null) {
-            return e;
-        }
-
-        return getCause(cause);
-    }
-
     int getMatchCount(final PageParameters parameters) {
         int count = 0;
 
@@ -163,11 +153,11 @@ final class PageConstructor {
         try {
             return constructor.newInstance(args);
         } catch (final InstantiationException e) {
-            throw new WicketRuntimeException(getCause(e));
+            throw new WicketRuntimeException(e);
         } catch (final IllegalAccessException e) {
-            throw new WicketRuntimeException(getCause(e));
+            throw new WicketRuntimeException(e);
         } catch (final InvocationTargetException e) {
-            throw new WicketRuntimeException(getCause(e));
+            throw new WicketRuntimeException(e);
         }
     }
 
