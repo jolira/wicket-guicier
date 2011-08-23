@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>wicket-guicier-parent</artifactId>
   <packaging>pom</packaging>
-  <version>2.0.3</version>
+  <version>2.0.4-SNAPSHOT</version>
   <name>Wicket Guicier Parent</name>
   <description>A resplacement for wicket-guice that uses constructor injection as an alternative to the excessive use of PageParameters.</description>
   <licenses>
