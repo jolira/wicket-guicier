@@ -661,6 +661,25 @@ public class GuicierPageFactoryTest {
     /**
      * Test something
      */
+    @Test(expected=IllegalArgumentException.class)
+    public void testInjectedAndOneIllegalParameter() {
+        final Injector injector = Guice.createInjector(new Module() {
+            @Override
+            public void configure(final Binder binder) {
+                binder.bind(IConverter.class).to(IntegerConverter.class);
+            }
+        });
+        final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
+        final PageParameters params = new PageParameters();
+
+        params.put("company", "\"");
+
+        factory.newPage(TestPage5.class, params);
+    }
+
+    /**
+     * Test something
+     */
     @Test
     public void testInjectedAndPageParameters() {
         final Injector injector = Guice.createInjector(new Module() {

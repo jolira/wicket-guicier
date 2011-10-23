@@ -36,6 +36,12 @@ public @interface Parameter {
     boolean optional() default false;
 
     /**
+     * Specifies whether this parameter should be checked for character that are used for SQL and
+     * other types of injection.
+     */
+    String verifier() default "[\\w\\s_\\-%]*";
+
+    /**
      * Identifies the name of the parameter. This is the string to used used as a key in {@link PageParameters}.
      */
     String value();

@@ -92,6 +92,11 @@ public class GuicierTest {
         public String value() {
             return value;
         }
+
+        @Override
+        public String verifier() {
+            return "[\\w]*";
+        }
     }
 
     static enum State {

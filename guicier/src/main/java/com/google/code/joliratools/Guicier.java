@@ -376,6 +376,10 @@ public class Guicier {
             return getNullValue(type);
         }
 
+        if (value instanceof String) {
+            verifyString(param, String.class.cast(value));
+        }
+
         cleansed.put(key, value);
 
         final Class<? extends Object> valClass = value.getClass();
@@ -408,6 +412,18 @@ public class Guicier {
         final T array_ = (T) _array;
 
         return array_;
+    }
+
+    private void verifyString(final Parameter param, final String value) {
+        final String verifier = param.verifier();
+
+        if (verifier == null || verifier.isEmpty()) {
+            return;
+        }
+
+        if (!value.matches(verifier)) {
+            throw new IllegalArgumentException("'" + value + "' does not match verifier '" + verifier + "'.");
+        }
     }
 
     private IConverter getConverter(final Parameter param, final Class<?> type) {
