@@ -376,7 +376,13 @@ public class Guicier {
             return getNullValue(type);
         }
 
-        if (value instanceof String) {
+        if (value instanceof String[]) {
+            final String[] params = String[].class.cast(value);
+
+            for (final String _param : params) {
+                verifyString(param, _param);
+            }
+        } else if(value instanceof String) {
             verifyString(param, String.class.cast(value));
         }
 
