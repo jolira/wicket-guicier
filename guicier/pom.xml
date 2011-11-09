@@ -6,7 +6,6 @@
     <version>2.0.13-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.jolira</groupId>
   <artifactId>wicket-guicier</artifactId>
   <packaging>jar</packaging>
   <name>Guicier Wicket</name>
