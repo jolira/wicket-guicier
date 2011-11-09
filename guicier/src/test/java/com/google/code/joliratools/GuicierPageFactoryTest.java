@@ -672,7 +672,7 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.put("company", "\"");
+        params.put("company", "<script/");
 
         factory.newPage(TestPage5.class, params);
     }
