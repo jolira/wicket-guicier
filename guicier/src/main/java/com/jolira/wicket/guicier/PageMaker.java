@@ -1,4 +1,4 @@
-package com.google.code.joliratools;
+package com.jolira.wicket.guicier;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.request.mapper.parameter.PageParameters;

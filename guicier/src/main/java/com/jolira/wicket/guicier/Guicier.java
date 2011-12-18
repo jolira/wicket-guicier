@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.google.code.joliratools;
+package com.jolira.wicket.guicier;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -34,9 +34,9 @@ import org.apache.wicket.util.convert.converter.SqlTimeConverter;
 import org.apache.wicket.util.convert.converter.SqlTimestampConverter;
 import org.apache.wicket.util.string.StringValue;
 
-import com.google.code.joliratools.Parameter.NoConverter;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.jolira.wicket.guicier.Parameter.NoConverter;
 
 /**
  * @author jfk
@@ -260,6 +260,172 @@ public class Guicier {
         return result;
     }
 
+    private static <T> Class<? extends IConverter<T>> getConverterClass(final Parameter param, final Class<?> type) {
+        final Class<? extends IConverter<T>> converterClass = (Class<? extends IConverter<T>>) param.converter();
+
+        if (converterClass.equals(NoConverter.class)) {
+            return getDefaultConverterClass(type);
+        }
+
+        return converterClass;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> Class<? extends IConverter<T>> getDefaultConverterClass(final Class<?> type) {
+        if (String.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) StringConverter.class;
+        }
+
+        if (int.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) PrimitiveIntConverter.class;
+        }
+
+        if (long.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) PrimitiveLongConverter.class;
+        }
+
+        if (short.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) PrimitiveShortConverter.class;
+        }
+
+        if (float.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) PrimitiveFloatConverter.class;
+        }
+
+        if (double.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) PrimitiveDoubleConverter.class;
+        }
+
+        if (boolean.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) PrimitiveBooleanConverter.class;
+        }
+
+        if (byte.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) PrimitiveByteConverter.class;
+        }
+
+        if (char.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) PrimitiveCharConverter.class;
+        }
+
+        if (Character.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) CharacterConverter.class;
+        }
+
+        if (Integer.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) IntegerConverter.class;
+        }
+
+        if (Long.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) LongConverter.class;
+        }
+
+        if (Short.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) ShortConverter.class;
+        }
+
+        if (Float.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) FloatConverter.class;
+        }
+
+        if (Double.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) DoubleConverter.class;
+        }
+
+        if (Boolean.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) BooleanConverter.class;
+        }
+
+        if (Byte.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) ByteConverter.class;
+        }
+
+        if (Character.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) CharacterConverter.class;
+        }
+
+        if (Date.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) DateConverter.class;
+        }
+
+        if (java.sql.Date.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) SqlDateConverter.class;
+        }
+
+        if (java.sql.Time.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) SqlTimeConverter.class;
+        }
+
+        if (java.sql.Timestamp.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) SqlTimestampConverter.class;
+        }
+
+        if (BigDecimal.class.equals(type)) {
+            return (Class<? extends IConverter<T>>) BigDecimalConverter.class;
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the value that represents null.
+     * 
+     * @param <T>
+     *            the type of parameter
+     * @param type
+     *            the value type
+     * @return the value representing null for the given type
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T getNullValue(final Class<T> type) {
+        if (int.class.equals(type)) {
+            return (T) Integer.valueOf(0);
+        }
+
+        if (double.class.equals(type)) {
+            return (T) Double.valueOf(0);
+        }
+
+        if (float.class.equals(type)) {
+            return (T) Float.valueOf(0);
+        }
+
+        if (short.class.equals(type)) {
+            return (T) Short.valueOf((short) 0);
+        }
+
+        if (long.class.equals(type)) {
+            return (T) Long.valueOf(0);
+        }
+
+        if (byte.class.equals(type)) {
+            return (T) Byte.valueOf((byte) 0);
+        }
+
+        if (char.class.equals(type)) {
+            return (T) Character.valueOf('\0');
+        }
+
+        if (boolean.class.equals(type)) {
+            return (T) Boolean.FALSE;
+        }
+
+        return null;
+    }
+
+    private static Parameter getParameter(final Annotation[] annotations) {
+        for (final Annotation anno : annotations) {
+            if (anno instanceof Parameter) {
+                return (Parameter) anno;
+            }
+        }
+        return null;
+    }
+
+    private static boolean isAnnotationPresent(final AnnotatedElement e) {
+        return e.isAnnotationPresent(Inject.class) || e.isAnnotationPresent(com.google.inject.Inject.class);
+    }
+
     private static boolean isAssignableFrom(final Class<?> left, final Class<? extends Object> right) {
         if (left.isAssignableFrom(right)) {
             return true;
@@ -286,6 +452,18 @@ public class Guicier {
         }
 
         return char.class.equals(left) && Character.class.equals(right);
+    }
+
+    private static void verifyString(final Parameter param, final String value) {
+        final String verifier = param.verifier();
+
+        if (verifier == null || verifier.isEmpty()) {
+            return;
+        }
+
+        if (!value.matches(verifier)) {
+            throw new IllegalArgumentException("'" + value + "' does not match verifier '" + verifier + "'.");
+        }
     }
 
     private final Injector injector;
@@ -444,169 +622,6 @@ public class Guicier {
         return converter;
     }
 
-    private <T> Class<? extends IConverter<T>> getConverterClass(final Parameter param, final Class<?> type) {
-        @SuppressWarnings("unchecked")
-        final Class<? extends IConverter<T>> converterClass = (Class<? extends IConverter<T>>) param.converter();
-
-        if (converterClass.equals(NoConverter.class)) {
-            return getDefaultConverterClass(type);
-        }
-
-        return converterClass;
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T> Class<? extends IConverter<T>> getDefaultConverterClass(final Class<?> type) {
-        if (String.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) StringConverter.class;
-        }
-
-        if (int.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) PrimitiveIntConverter.class;
-        }
-
-        if (long.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) PrimitiveLongConverter.class;
-        }
-
-        if (short.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) PrimitiveShortConverter.class;
-        }
-
-        if (float.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) PrimitiveFloatConverter.class;
-        }
-
-        if (double.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) PrimitiveDoubleConverter.class;
-        }
-
-        if (boolean.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) PrimitiveBooleanConverter.class;
-        }
-
-        if (byte.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) PrimitiveByteConverter.class;
-        }
-
-        if (char.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) PrimitiveCharConverter.class;
-        }
-
-        if (Character.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) CharacterConverter.class;
-        }
-
-        if (Integer.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) IntegerConverter.class;
-        }
-
-        if (Long.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) LongConverter.class;
-        }
-
-        if (Short.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) ShortConverter.class;
-        }
-
-        if (Float.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) FloatConverter.class;
-        }
-
-        if (Double.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) DoubleConverter.class;
-        }
-
-        if (Boolean.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) BooleanConverter.class;
-        }
-
-        if (Byte.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) ByteConverter.class;
-        }
-
-        if (Character.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) CharacterConverter.class;
-        }
-
-        if (Date.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) DateConverter.class;
-        }
-
-        if (java.sql.Date.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) SqlDateConverter.class;
-        }
-
-        if (java.sql.Time.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) SqlTimeConverter.class;
-        }
-
-        if (java.sql.Timestamp.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) SqlTimestampConverter.class;
-        }
-
-        if (BigDecimal.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) BigDecimalConverter.class;
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns the value that represents null.
-     * 
-     * @param <T>
-     *            the type of parameter
-     * @param type
-     *            the value type
-     * @return the value representing null for the given type
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T getNullValue(final Class<T> type) {
-        if (int.class.equals(type)) {
-            return (T) Integer.valueOf(0);
-        }
-
-        if (double.class.equals(type)) {
-            return (T) Double.valueOf(0);
-        }
-
-        if (float.class.equals(type)) {
-            return (T) Float.valueOf(0);
-        }
-
-        if (short.class.equals(type)) {
-            return (T) Short.valueOf((short) 0);
-        }
-
-        if (long.class.equals(type)) {
-            return (T) Long.valueOf(0);
-        }
-
-        if (byte.class.equals(type)) {
-            return (T) Byte.valueOf((byte) 0);
-        }
-
-        if (char.class.equals(type)) {
-            return (T) Character.valueOf('\0');
-        }
-
-        if (boolean.class.equals(type)) {
-            return (T) Boolean.FALSE;
-        }
-
-        return null;
-    }
-
-    private Parameter getParameter(final Annotation[] annotations) {
-        for (final Annotation anno : annotations) {
-            if (anno instanceof Parameter) {
-                return (Parameter) anno;
-            }
-        }
-        return null;
-    }
-
     private <T> T getValue(final Parameter param, final Class<T> type, final String value) {
         if (type.isAssignableFrom(String.class)) {
             @SuppressWarnings("unchecked")
@@ -621,10 +636,6 @@ public class Guicier {
         return converter.convertToObject(strValue, null);
     }
 
-    private boolean isAnnotationPresent(final AnnotatedElement e) {
-        return e.isAnnotationPresent(Inject.class) || e.isAnnotationPresent(com.google.inject.Inject.class);
-    }
-
     private <T> void put(final PageParameters params, final Parameter param, final Object arg, final Class<T> type,
             final Locale locale) {
         final String name = param.value();
@@ -634,17 +645,5 @@ public class Guicier {
         final String converted = converter.convertToString(_arg, locale);
 
         params.set(name, converted);
-    }
-
-    private void verifyString(final Parameter param, final String value) {
-        final String verifier = param.verifier();
-
-        if (verifier == null || verifier.isEmpty()) {
-            return;
-        }
-
-        if (!value.matches(verifier)) {
-            throw new IllegalArgumentException("'" + value + "' does not match verifier '" + verifier + "'.");
-        }
     }
 }

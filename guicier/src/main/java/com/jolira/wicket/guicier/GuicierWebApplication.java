@@ -3,7 +3,7 @@
  * the terms of the GNU Public License 2.0 which is available at http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
-package com.google.code.joliratools.guicier;
+package com.jolira.wicket.guicier;
 
 import javax.inject.Inject;
 
@@ -19,7 +19,6 @@ import org.apache.wicket.request.Response;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.cycle.RequestCycleContext;
 
-import com.google.code.joliratools.GuicierPageFactory;
 import com.google.inject.Injector;
 
 /**

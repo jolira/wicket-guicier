@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.google.code.joliratools;
+package com.jolira.wicket.guicier;
 
 import static java.lang.annotation.ElementType.CONSTRUCTOR;
 import static java.lang.annotation.ElementType.FIELD;

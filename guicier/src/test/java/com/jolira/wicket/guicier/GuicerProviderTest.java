@@ -1,4 +1,4 @@
-package com.google.code.joliratools.guicier;
+package com.jolira.wicket.guicier;
 
 import static org.junit.Assert.assertEquals;
 

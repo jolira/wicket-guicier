@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.google.code.joliratools;
+package com.jolira.wicket.guicier;
 
 import java.util.Map;
 import java.util.WeakHashMap;

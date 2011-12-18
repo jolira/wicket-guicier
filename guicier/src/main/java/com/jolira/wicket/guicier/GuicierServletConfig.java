@@ -3,7 +3,7 @@
  * the terms of the GNU Public License 2.0 which is available at http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
-package com.google.code.joliratools.guicier;
+package com.jolira.wicket.guicier;
 
 import com.google.code.joliratools.plugins.PluginManager;
 import com.google.inject.Binder;
@@ -33,38 +33,10 @@ public abstract class GuicierServletConfig extends GuiceServletContextListener {
      *            an optional set of module to be loaded
      * @return the injector.
      */
-    protected Injector create(final Stage stage, final Module... modules) {
+    protected static Injector create(final Stage stage, final Module... modules) {
         final PluginManager mgr = new PluginManager(stage, modules);
 
         return mgr.getInjector();
-    }
-
-    /**
-     * @return the configuration type to be used for the injector.
-     */
-    protected abstract Stage getConfigurationType();
-
-    @Override
-    protected Injector getInjector() {
-        final Stage stage = getConfigurationType();
-
-        return create(stage, new Module() {
-            @Override
-            public void configure(final Binder binder) {
-                binder.bindScope(RequestScoped.class, new Scope() {
-                    @Override
-                    public <T> Provider<T> scope(final Key<T> key, final Provider<T> unscoped) {
-                        return requestScoped(key, unscoped);
-                    }
-                });
-                binder.bindScope(SessionScoped.class, new Scope() {
-                    @Override
-                    public <T> Provider<T> scope(final Key<T> key, final Provider<T> unscoped) {
-                        return sessionScoped(key, unscoped);
-                    }
-                });
-            }
-        });
     }
 
     /**
@@ -81,7 +53,7 @@ public abstract class GuicierServletConfig extends GuiceServletContextListener {
      *            the provider for the unscoped value
      * @return the provider
      */
-    protected <T> Provider<T> requestScoped(final Key<T> key, final Provider<T> unscoped) {
+    protected static <T> Provider<T> requestScoped(final Key<T> key, final Provider<T> unscoped) {
         return new Provider<T>() {
             @Override
             public T get() {
@@ -113,7 +85,7 @@ public abstract class GuicierServletConfig extends GuiceServletContextListener {
      *            the provider for the unscoped value
      * @return the provider
      */
-    protected <T> Provider<T> sessionScoped(final Key<T> key, final Provider<T> unscoped) {
+    protected static <T> Provider<T> sessionScoped(final Key<T> key, final Provider<T> unscoped) {
         return new Provider<T>() {
 
             @Override
@@ -129,5 +101,33 @@ public abstract class GuicierServletConfig extends GuiceServletContextListener {
                 return provider.get();
             }
         };
+    }
+
+    /**
+     * @return the configuration type to be used for the injector.
+     */
+    protected abstract Stage getConfigurationType();
+
+    @Override
+    protected Injector getInjector() {
+        final Stage stage = getConfigurationType();
+
+        return create(stage, new Module() {
+            @Override
+            public void configure(final Binder binder) {
+                binder.bindScope(RequestScoped.class, new Scope() {
+                    @Override
+                    public <T> Provider<T> scope(final Key<T> key, final Provider<T> unscoped) {
+                        return requestScoped(key, unscoped);
+                    }
+                });
+                binder.bindScope(SessionScoped.class, new Scope() {
+                    @Override
+                    public <T> Provider<T> scope(final Key<T> key, final Provider<T> unscoped) {
+                        return sessionScoped(key, unscoped);
+                    }
+                });
+            }
+        });
     }
 }

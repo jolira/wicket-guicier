@@ -1,4 +1,4 @@
-package com.google.code.joliratools.guicier;
+package com.jolira.wicket.guicier;
 
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;

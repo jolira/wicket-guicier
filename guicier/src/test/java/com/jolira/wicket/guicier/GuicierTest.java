@@ -1,7 +1,7 @@
 /**
  *
  */
-package com.google.code.joliratools;
+package com.jolira.wicket.guicier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -19,10 +19,10 @@ import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.string.StringValue;
 import org.junit.Test;
 
-import com.google.code.joliratools.Guicier.StringConverter;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.jolira.wicket.guicier.Guicier.StringConverter;
 
 /**
  * @author jfk

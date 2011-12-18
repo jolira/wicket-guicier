@@ -1,4 +1,4 @@
-package com.google.code.joliratools;
+package com.jolira.wicket.guicier;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -19,7 +19,6 @@ final class PageCreatorImpl implements PageMaker {
 
     <C extends IRequestablePage> PageCreatorImpl(final Injector injector, final Class<C> cls) {
         pageClass = cls;
-        @SuppressWarnings("unchecked")
         final Constructor<Page>[] constructors = (Constructor<Page>[]) cls.getDeclaredConstructors();
         final Collection<PageConstructor> _annotatedConstructors = new ArrayList<PageConstructor>();
         PageConstructor _defaultConstructor = null;
