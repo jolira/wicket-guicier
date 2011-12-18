@@ -11,8 +11,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import java.util.Locale;
 
-import org.apache.wicket.PageParameters;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.convert.IConverter;
 
 /**
@@ -25,10 +26,24 @@ import org.apache.wicket.util.convert.IConverter;
 @Retention(RUNTIME)
 @Documented
 public @interface Parameter {
+    public static class NoConverter implements IConverter<Void> {
+        private static final long serialVersionUID = -8277917810456187685L;
+
+        @Override
+        public Void convertToObject(final String value, final Locale locale) {
+            return null;
+        }
+
+        @Override
+        public String convertToString(final Void value, final Locale locale) {
+            return null;
+        }
+    }
+
     /**
-     * @return specifies what converter should be used for this paramter.
+     * @return specifies what converter should be used for this parameter.
      */
-    Class<? extends IConverter> converter() default IConverter.class;
+    Class<? extends IConverter<?>> converter() default NoConverter.class;
 
     /**
      * Specifies whether this parameter must be present in the {@link PageParameters} list.

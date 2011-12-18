@@ -19,11 +19,11 @@
     </license>
   </licenses>
   <properties>
-    <wicket.version>1.4.17</wicket.version>
+    <wicket.version>1.5.3</wicket.version>
     <guice.version>3.0</guice.version>
-    <jetty.version>7.3.1.v20110307</jetty.version>
-    <junit.version>4.8.1</junit.version>
-    <slf4j.version>1.6.1</slf4j.version>
+    <jetty.version>7.5.4.v20111024</jetty.version>
+    <junit.version>4.10</junit.version>
+    <slf4j.version>1.6.4</slf4j.version>
   </properties>
   <modules>
     <module>guicier</module>

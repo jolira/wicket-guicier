@@ -42,4 +42,9 @@ public class GuicierWebApplicationFactory implements IWebApplicationFactory {
     public WebApplication createApplication(final WicketFilter filter) {
         return injector.getInstance(appCls);
     }
+
+    @Override
+    public void destroy(final WicketFilter filter) {
+        // nothing
+    }
 }

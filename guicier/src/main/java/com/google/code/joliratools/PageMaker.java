@@ -1,7 +1,7 @@
 package com.google.code.joliratools;
 
 import org.apache.wicket.Page;
-import org.apache.wicket.PageParameters;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 /**
  * An interface for creating pages.

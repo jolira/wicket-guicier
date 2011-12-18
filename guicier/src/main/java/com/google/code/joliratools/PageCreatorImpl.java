@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.wicket.Page;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.WicketRuntimeException;
+import org.apache.wicket.request.component.IRequestablePage;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import com.google.inject.Injector;
 
@@ -14,9 +15,9 @@ final class PageCreatorImpl implements PageMaker {
     private final PageConstructor defaultConstructor;
     private final PageConstructor paramsOnlyConstructor;
     private final PageConstructor[] annotatedConstructors;
-    private final Class<? extends Page> pageClass;
+    private final Class<? extends IRequestablePage> pageClass;
 
-    <C extends Page> PageCreatorImpl(final Injector injector, final Class<C> cls) {
+    <C extends IRequestablePage> PageCreatorImpl(final Injector injector, final Class<C> cls) {
         pageClass = cls;
         @SuppressWarnings("unchecked")
         final Constructor<Page>[] constructors = (Constructor<Page>[]) cls.getDeclaredConstructors();

@@ -4,12 +4,14 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.util.Collection;
 
 import javax.inject.Inject;
 
 import org.apache.wicket.Page;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.WicketRuntimeException;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.util.string.StringValue;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
@@ -121,7 +123,7 @@ final class PageConstructor {
 
             final String key = param.value();
 
-            if (parameters == null || !parameters.containsKey(key)) {
+            if (contains(parameters, key)) {
                 if (!param.optional()) {
                     return -1;
                 }
@@ -133,6 +135,16 @@ final class PageConstructor {
         }
 
         return count;
+    }
+
+    private static boolean contains(final PageParameters parameters, final String name) {
+        if (parameters == null) {
+            return false;
+        }
+
+        final Collection<StringValue> values = parameters.getValues(name);
+
+        return !values.isEmpty();
     }
 
     boolean isDefault() {

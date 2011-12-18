@@ -9,28 +9,32 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.WicketRuntimeException;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.convert.IConverter;
-import org.apache.wicket.util.convert.converters.BigDecimalConverter;
-import org.apache.wicket.util.convert.converters.BooleanConverter;
-import org.apache.wicket.util.convert.converters.ByteConverter;
-import org.apache.wicket.util.convert.converters.CharacterConverter;
-import org.apache.wicket.util.convert.converters.DateConverter;
-import org.apache.wicket.util.convert.converters.DoubleConverter;
-import org.apache.wicket.util.convert.converters.FloatConverter;
-import org.apache.wicket.util.convert.converters.IntegerConverter;
-import org.apache.wicket.util.convert.converters.LongConverter;
-import org.apache.wicket.util.convert.converters.ShortConverter;
-import org.apache.wicket.util.convert.converters.SqlDateConverter;
-import org.apache.wicket.util.convert.converters.SqlTimeConverter;
-import org.apache.wicket.util.convert.converters.SqlTimestampConverter;
+import org.apache.wicket.util.convert.converter.BigDecimalConverter;
+import org.apache.wicket.util.convert.converter.BooleanConverter;
+import org.apache.wicket.util.convert.converter.ByteConverter;
+import org.apache.wicket.util.convert.converter.CharacterConverter;
+import org.apache.wicket.util.convert.converter.DateConverter;
+import org.apache.wicket.util.convert.converter.DoubleConverter;
+import org.apache.wicket.util.convert.converter.FloatConverter;
+import org.apache.wicket.util.convert.converter.IntegerConverter;
+import org.apache.wicket.util.convert.converter.LongConverter;
+import org.apache.wicket.util.convert.converter.ShortConverter;
+import org.apache.wicket.util.convert.converter.SqlDateConverter;
+import org.apache.wicket.util.convert.converter.SqlTimeConverter;
+import org.apache.wicket.util.convert.converter.SqlTimestampConverter;
+import org.apache.wicket.util.string.StringValue;
 
+import com.google.code.joliratools.Parameter.NoConverter;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
@@ -39,7 +43,7 @@ import com.google.inject.Singleton;
  */
 @Singleton
 public class Guicier {
-    private class EnumConverter<T extends Enum<T>> implements IConverter {
+    private class EnumConverter<T extends Enum<T>> implements IConverter<T> {
         private static final long serialVersionUID = -5797300013416456562L;
         private final Class<T> type;
 
@@ -48,7 +52,7 @@ public class Guicier {
         }
 
         @Override
-        public Object convertToObject(final String value, final Locale locale) {
+        public T convertToObject(final String value, final Locale locale) {
             if (value.isEmpty()) {
                 return null;
             }
@@ -58,10 +62,9 @@ public class Guicier {
             }
 
             final int ordinal = Integer.parseInt(value);
+            final T[] constants = type.getEnumConstants();
 
-            final Enum<?>[] constants = type.getEnumConstants();
-
-            for (final Enum<?> constant : constants) {
+            for (final T constant : constants) {
                 final int _ordinal = constant.ordinal();
 
                 if (_ordinal == ordinal) {
@@ -73,8 +76,8 @@ public class Guicier {
         }
 
         @Override
-        public String convertToString(final Object value, final Locale locale) {
-            final Enum<?> _enum = (Enum<?>) value;
+        public String convertToString(final T value, final Locale locale) {
+            final Enum<?> _enum = value;
 
             return _enum.name();
         }
@@ -92,7 +95,6 @@ public class Guicier {
 
             return true;
         }
-
     }
 
     /**
@@ -102,7 +104,7 @@ public class Guicier {
         private static final long serialVersionUID = -3890658188435687997L;
 
         @Override
-        public Object convertToObject(final String value, final Locale locale) {
+        public Boolean convertToObject(final String value, final Locale locale) {
             if (value.isEmpty()) {
                 return Boolean.FALSE;
             }
@@ -118,7 +120,7 @@ public class Guicier {
         private static final long serialVersionUID = -2108916636178629276L;
 
         @Override
-        public Object convertToObject(final String value, final Locale locale) {
+        public Byte convertToObject(final String value, final Locale locale) {
             if (value.isEmpty()) {
                 return Byte.valueOf((byte) 0);
             }
@@ -134,7 +136,7 @@ public class Guicier {
         private static final long serialVersionUID = 2848347198715860269L;
 
         @Override
-        public Object convertToObject(final String value, final Locale locale) {
+        public Character convertToObject(final String value, final Locale locale) {
             if (value.isEmpty()) {
                 return Character.valueOf('\0');
             }
@@ -226,18 +228,36 @@ public class Guicier {
     /**
      * Convert strings.
      */
-    public static class StringConverter implements IConverter {
+    public static class StringConverter implements IConverter<String> {
         private static final long serialVersionUID = 5221463436925128138L;
 
         @Override
-        public Object convertToObject(final String value, final Locale locale) {
+        public String convertToObject(final String value, final Locale locale) {
             return value;
         }
 
         @Override
-        public String convertToString(final Object value, final Locale locale) {
+        public String convertToString(final String value, final Locale locale) {
             return value.toString();
         }
+    }
+
+    private static String[] get(@Nullable final PageParameters parameters, final String key) {
+        if (parameters == null) {
+            return null;
+        }
+
+        final Collection<StringValue> values = parameters.getValues(key);
+        final int size = values.size();
+        final String[] result = new String[size];
+
+        int idx = 0;
+
+        for (final StringValue val : values) {
+            result[idx++] = val.toString();
+        }
+
+        return result;
     }
 
     private static boolean isAssignableFrom(final Class<?> left, final Class<? extends Object> right) {
@@ -370,48 +390,34 @@ public class Guicier {
         }
 
         final String key = param.value();
-        final Object value = parameters != null ? parameters.get(key) : null;
+        final String[] value = get(parameters, key);
 
-        if (value == null) {
+        if (value.length == 0) {
             return getNullValue(type);
         }
 
-        if (value instanceof String[]) {
-            final String[] params = String[].class.cast(value);
-
-            for (final String _param : params) {
-                verifyString(param, _param);
-            }
-        } else if(value instanceof String) {
-            verifyString(param, String.class.cast(value));
+        for (final String _param : value) {
+            verifyString(param, _param);
+            cleansed.add(key, _param);
         }
 
-        cleansed.put(key, value);
-
-        final Class<? extends Object> valClass = value.getClass();
-
-        if (!valClass.isArray()) {
-            return getValue(param, type, value, valClass);
-        }
-
-        final Object[] array = (Object[]) value;
-        final Class<?> valComponentType = valClass.getComponentType();
         final Class<?> componentType = type.getComponentType();
 
         if (!type.isArray()) {
-            if (array.length < 1) {
+            if (value.length < 1) {
                 @SuppressWarnings("unchecked")
                 final Class<T> casted = (Class<T>) componentType;
 
                 return getNullValue(casted);
             }
-            return getValue(param, type, array[0], valComponentType);
+
+            return getValue(param, type, value[0]);
         }
 
-        final Object[] _array = (Object[]) Array.newInstance(componentType, array.length);
+        final Object[] _array = (Object[]) Array.newInstance(componentType, value.length);
 
-        for (int idx = 0; idx < array.length; idx++) {
-            _array[idx] = getValue(param, componentType, array[idx], valComponentType);
+        for (int idx = 0; idx < value.length; idx++) {
+            _array[idx] = getValue(param, componentType, value[idx]);
         }
 
         @SuppressWarnings("unchecked")
@@ -420,20 +426,8 @@ public class Guicier {
         return array_;
     }
 
-    private void verifyString(final Parameter param, final String value) {
-        final String verifier = param.verifier();
-
-        if (verifier == null || verifier.isEmpty()) {
-            return;
-        }
-
-        if (!value.matches(verifier)) {
-            throw new IllegalArgumentException("'" + value + "' does not match verifier '" + verifier + "'.");
-        }
-    }
-
-    private IConverter getConverter(final Parameter param, final Class<?> type) {
-        final Class<? extends IConverter> converterClass = getConverterClass(param, type);
+    private <T> IConverter<T> getConverter(final Parameter param, final Class<T> type) {
+        final Class<? extends IConverter<T>> converterClass = getConverterClass(param, type);
 
         if (converterClass != null) {
             return injector.getInstance(converterClass);
@@ -444,112 +438,114 @@ public class Guicier {
         }
 
         @SuppressWarnings({ "rawtypes", "unchecked" })
-        final EnumConverter<?> converter = new EnumConverter(type);
+        final IConverter<T> converter = new EnumConverter(type);
 
         return converter;
     }
 
-    private Class<? extends IConverter> getConverterClass(final Parameter param, final Class<?> type) {
-        final Class<? extends IConverter> converterClass = param.converter();
+    private <T> Class<? extends IConverter<T>> getConverterClass(final Parameter param, final Class<?> type) {
+        @SuppressWarnings("unchecked")
+        final Class<? extends IConverter<T>> converterClass = (Class<? extends IConverter<T>>) param.converter();
 
-        if (IConverter.class.equals(converterClass)) {
+        if (converterClass.equals(NoConverter.class)) {
             return getDefaultConverterClass(type);
         }
 
         return converterClass;
     }
 
-    private Class<? extends IConverter> getDefaultConverterClass(final Class<?> type) {
+    @SuppressWarnings("unchecked")
+    private <T> Class<? extends IConverter<T>> getDefaultConverterClass(final Class<?> type) {
         if (String.class.equals(type)) {
-            return StringConverter.class;
+            return (Class<? extends IConverter<T>>) StringConverter.class;
         }
 
         if (int.class.equals(type)) {
-            return PrimitiveIntConverter.class;
+            return (Class<? extends IConverter<T>>) PrimitiveIntConverter.class;
         }
 
         if (long.class.equals(type)) {
-            return PrimitiveLongConverter.class;
+            return (Class<? extends IConverter<T>>) PrimitiveLongConverter.class;
         }
 
         if (short.class.equals(type)) {
-            return PrimitiveShortConverter.class;
+            return (Class<? extends IConverter<T>>) PrimitiveShortConverter.class;
         }
 
         if (float.class.equals(type)) {
-            return PrimitiveFloatConverter.class;
+            return (Class<? extends IConverter<T>>) PrimitiveFloatConverter.class;
         }
 
         if (double.class.equals(type)) {
-            return PrimitiveDoubleConverter.class;
+            return (Class<? extends IConverter<T>>) PrimitiveDoubleConverter.class;
         }
 
         if (boolean.class.equals(type)) {
-            return PrimitiveBooleanConverter.class;
+            return (Class<? extends IConverter<T>>) PrimitiveBooleanConverter.class;
         }
 
         if (byte.class.equals(type)) {
-            return PrimitiveByteConverter.class;
+            return (Class<? extends IConverter<T>>) PrimitiveByteConverter.class;
         }
 
         if (char.class.equals(type)) {
-            return PrimitiveCharConverter.class;
+            return (Class<? extends IConverter<T>>) PrimitiveCharConverter.class;
         }
 
         if (Character.class.equals(type)) {
-            return CharacterConverter.class;
+            return (Class<? extends IConverter<T>>) CharacterConverter.class;
         }
 
         if (Integer.class.equals(type)) {
-            return IntegerConverter.class;
+            return (Class<? extends IConverter<T>>) IntegerConverter.class;
         }
 
         if (Long.class.equals(type)) {
-            return LongConverter.class;
+            return (Class<? extends IConverter<T>>) LongConverter.class;
         }
 
         if (Short.class.equals(type)) {
-            return ShortConverter.class;
+            return (Class<? extends IConverter<T>>) ShortConverter.class;
         }
 
         if (Float.class.equals(type)) {
-            return FloatConverter.class;
+            return (Class<? extends IConverter<T>>) FloatConverter.class;
         }
 
         if (Double.class.equals(type)) {
-            return DoubleConverter.class;
+            return (Class<? extends IConverter<T>>) DoubleConverter.class;
         }
 
         if (Boolean.class.equals(type)) {
-            return BooleanConverter.class;
+            return (Class<? extends IConverter<T>>) BooleanConverter.class;
         }
 
         if (Byte.class.equals(type)) {
-            return ByteConverter.class;
+            return (Class<? extends IConverter<T>>) ByteConverter.class;
         }
 
         if (Character.class.equals(type)) {
-            return CharacterConverter.class;
+            return (Class<? extends IConverter<T>>) CharacterConverter.class;
         }
 
         if (Date.class.equals(type)) {
-            return DateConverter.class;
+            return (Class<? extends IConverter<T>>) DateConverter.class;
         }
 
         if (java.sql.Date.class.equals(type)) {
-            return SqlDateConverter.class;
+            return (Class<? extends IConverter<T>>) SqlDateConverter.class;
         }
 
         if (java.sql.Time.class.equals(type)) {
-            return SqlTimeConverter.class;
+            return (Class<? extends IConverter<T>>) SqlTimeConverter.class;
         }
 
         if (java.sql.Timestamp.class.equals(type)) {
-            return SqlTimestampConverter.class;
+            return (Class<? extends IConverter<T>>) SqlTimestampConverter.class;
         }
 
         if (BigDecimal.class.equals(type)) {
-            return BigDecimalConverter.class;
+            return (Class<? extends IConverter<T>>) BigDecimalConverter.class;
         }
 
         return null;
@@ -610,32 +606,44 @@ public class Guicier {
         return null;
     }
 
-    private <T> T getValue(final Parameter param, final Class<T> type, final Object value, final Class<?> valClass) {
-        if (type.isAssignableFrom(valClass)) {
+    private <T> T getValue(final Parameter param, final Class<T> type, final String value) {
+        if (type.isAssignableFrom(String.class)) {
             @SuppressWarnings("unchecked")
             final T casted = (T) value;
 
             return casted;
         }
 
-        final IConverter converter = getConverter(param, type);
+        final IConverter<T> converter = getConverter(param, type);
         final String strValue = value.toString();
-        @SuppressWarnings("unchecked")
-        final T converted = (T) converter.convertToObject(strValue, null);
 
-        return converted;
+        return converter.convertToObject(strValue, null);
     }
 
     private boolean isAnnotationPresent(final AnnotatedElement e) {
         return e.isAnnotationPresent(Inject.class) || e.isAnnotationPresent(com.google.inject.Inject.class);
     }
 
-    private void put(final PageParameters params, final Parameter param, final Object arg, final Class<?> type,
+    private <T> void put(final PageParameters params, final Parameter param, final Object arg, final Class<T> type,
             final Locale locale) {
         final String name = param.value();
-        final IConverter converter = getConverter(param, type);
-        final String converted = converter.convertToString(arg, locale);
+        final IConverter<T> converter = getConverter(param, type);
+        @SuppressWarnings("unchecked")
+        final T _arg = (T) arg;
+        final String converted = converter.convertToString(_arg, locale);
 
-        params.put(name, converted);
+        params.set(name, converted);
+    }
+
+    private void verifyString(final Parameter param, final String value) {
+        final String verifier = param.verifier();
+
+        if (verifier == null || verifier.isEmpty()) {
+            return;
+        }
+
+        if (!value.matches(verifier)) {
+            throw new IllegalArgumentException("'" + value + "' does not match verifier '" + verifier + "'.");
+        }
     }
 }

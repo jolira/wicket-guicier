@@ -8,14 +8,16 @@ package com.google.code.joliratools.guicier;
 import javax.inject.Inject;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.Request;
-import org.apache.wicket.RequestCycle;
-import org.apache.wicket.Response;
+import org.apache.wicket.IPageFactory;
+import org.apache.wicket.IRequestCycleProvider;
 import org.apache.wicket.Session;
+import org.apache.wicket.application.ComponentInstantiationListenerCollection;
 import org.apache.wicket.application.IComponentInstantiationListener;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.protocol.http.WebRequest;
-import org.apache.wicket.settings.ISessionSettings;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.Response;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.cycle.RequestCycleContext;
 
 import com.google.code.joliratools.GuicierPageFactory;
 import com.google.inject.Injector;
@@ -59,15 +61,9 @@ public abstract class GuicierWebApplication extends WebApplication {
     protected void init() {
         super.init();
 
-        final ISessionSettings settings = getSessionSettings();
+        final ComponentInstantiationListenerCollection listeners = getComponentInstantiationListeners();
 
-        settings.setPageFactory(new GuicierPageFactoryProxy() {
-            @Override
-            Injector getInjector() {
-                return GuicierWebApplication.this.getInjector();
-            }
-        });
-        addComponentInstantiationListener(new IComponentInstantiationListener() {
+        listeners.add(new IComponentInstantiationListener() {
             @Override
             public void onInstantiation(final Component component) {
                 final Injector i = GuicierWebApplication.this.getInjector();
@@ -75,18 +71,26 @@ public abstract class GuicierWebApplication extends WebApplication {
                 i.injectMembers(component);
             }
         });
+
+        setRequestCycleProvider(new IRequestCycleProvider() {
+            @Override
+            public RequestCycle get(final RequestCycleContext context) {
+                return new GuicierWebRequestCycle(context);
+            }
+        });
+    }
+
+    @Override
+    protected IPageFactory newPageFactory() {
+        return new GuicierPageFactoryProxy() {
+            @Override
+            Injector getInjector() {
+                return GuicierWebApplication.this.getInjector();
+            }
+        };
     }
 
     /**
-     * Create a {@link GuicierWebRequestCycle}.
-     * 
-     * @see WebApplication#newRequestCycle(Request, Response)
-     */
-    @Override
-    public RequestCycle newRequestCycle(final Request request, final Response response) {
-        return new GuicierWebRequestCycle(this, (WebRequest) request, response);
-    }
-
     /**
      * Creates a {@link GuicierWebSession}.
      * 

@@ -13,12 +13,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.wicket.Page;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.request.component.IRequestablePage;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.convert.IConverter;
-import org.apache.wicket.util.convert.converters.IntegerConverter;
+import org.apache.wicket.util.convert.converter.IntegerConverter;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.After;
 import org.junit.Before;
@@ -42,6 +42,8 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class EnumerationTestPage extends WebPage {
+        private static final long serialVersionUID = 4865753504614256826L;
+
         @Inject
         EnumerationTestPage(@Parameter("state") final State state) {
             assertEquals(State.ON, state);
@@ -63,6 +65,8 @@ public class GuicierPageFactoryTest {
      * A simple test page with javax
      */
     public static class MyJavaxTest extends WebPage {
+        private static final long serialVersionUID = 4865753504614256826L;
+
         /**
          * @param abcde
          */
@@ -76,6 +80,8 @@ public class GuicierPageFactoryTest {
      * A simple test page
      */
     public static class MyTest extends WebPage {
+        private static final long serialVersionUID = 4865753504614256826L;
+
         /**
          * @param abcde
          */
@@ -89,16 +95,16 @@ public class GuicierPageFactoryTest {
         ON, OFF
     }
 
-    private static class StringConverter implements IConverter {
+    private static class StringConverter implements IConverter<String> {
         private static final long serialVersionUID = 5221463436925128138L;
 
         @Override
-        public Object convertToObject(final String value, final Locale locale) {
+        public String convertToObject(final String value, final Locale locale) {
             return "converted:" + value;
         }
 
         @Override
-        public String convertToString(final Object value, final Locale locale) {
+        public String convertToString(final String value, final Locale locale) {
             return value.toString();
         }
     }
@@ -107,11 +113,13 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage0 extends WebPage {
+        private static final long serialVersionUID = 4865753504614256826L;
+
         /**
          * @param converter
          */
         @Inject
-        TestPage0(final IConverter converter) {
+        TestPage0(final IConverter<?> converter) {
             fail();
         }
     }
@@ -120,6 +128,8 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage1 extends WebPage {
+        private static final long serialVersionUID = 4865753504614256826L;
+
         // nothing
     }
 
@@ -127,6 +137,8 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage12 extends WebPage {
+        private static final long serialVersionUID = 4865753504614256826L;
+
         @Inject
         TestPage12(@Parameter(value = "offset", optional = true) final double offset) {
             assertEquals(0, offset, 0);
@@ -137,6 +149,8 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage13 extends WebPage {
+        private static final long serialVersionUID = 4865753504614256826L;
+
         @Inject
         TestPage13(@Parameter(value = "offset", optional = true) final short offset) {
             assertEquals(0, offset, 0);
@@ -147,6 +161,8 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage14 extends WebPage {
+        private static final long serialVersionUID = 4865753504614256826L;
+
         @Inject
         TestPage14(@Parameter(value = "offset", optional = true) final float offset) {
             assertEquals(0, offset, 0);
@@ -157,6 +173,8 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage15 extends WebPage {
+        private static final long serialVersionUID = 4865753504614256826L;
+
         @Inject
         TestPage15(@Parameter(value = "offset", optional = true) final boolean offset) {
             assertFalse(offset);
@@ -167,6 +185,9 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage16 extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
+
         @Inject
         TestPage16(@Parameter(value = "offset", optional = true) final long offset) {
             assertEquals(0, offset);
@@ -177,6 +198,8 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage17 extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
         @Inject
         TestPage17(@Parameter(value = "offset", optional = true) final char offset) {
             assertEquals(0, offset);
@@ -187,8 +210,10 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage5 extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
         @Inject
-        TestPage5(final IConverter converter, @Parameter("company") final String company) {
+        TestPage5(final IConverter<?> converter, @Parameter("company") final String company) {
             assertEquals("jolira", company);
             assertEquals(IntegerConverter.class, converter.getClass());
         }
@@ -198,8 +223,10 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage5a extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
         @Inject
-        TestPage5a(final IConverter converter, @Parameter(value = "company", optional = true) final String company) {
+        TestPage5a(final IConverter<?> converter, @Parameter(value = "company", optional = true) final String company) {
             assertNull(company);
             assertEquals(IntegerConverter.class, converter.getClass());
         }
@@ -209,6 +236,8 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage6 extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
         @Inject
         TestPage6(@Parameter("offset") final int offset) {
             assertEquals(15, offset);
@@ -219,6 +248,8 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage7 extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
         /**
          * @param value1
          * @param value2
@@ -273,7 +304,7 @@ public class GuicierPageFactoryTest {
             assertEquals(Boolean.TRUE, Boolean.valueOf(success1));
             assertEquals(Byte.valueOf((byte) 15), offset14);
             assertEquals(Byte.valueOf((byte) 15), Byte.valueOf(offset13));
-            assertEquals(2, params.size());
+            assertEquals(2, params.getIndexedCount());
             assertEquals("true", params.get("success"));
         }
     }
@@ -282,11 +313,13 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage8 extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
         /**
          * @param converter
          */
         @Inject
-        TestPage8(@Named("jfk") final IConverter converter, @Parameter("company") final String company) {
+        TestPage8(@Named("jfk") final IConverter<?> converter, @Parameter("company") final String company) {
             assertEquals("jolira", company);
         }
     }
@@ -295,12 +328,14 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage9 extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
         /**
          * @param converter
          * @param company
          */
         @Inject
-        TestPage9(@Named("jfk") final IConverter converter, @Parameter("company") final Map<String, String> company) {
+        TestPage9(@Named("jfk") final IConverter<?> converter, @Parameter("company") final Map<String, String> company) {
             fail();
         }
     }
@@ -309,12 +344,14 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPage99 extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
         /**
          * @param converter
          * @param state
          */
         @Inject
-        TestPage99(final IConverter converter, @Parameter("state") final State state) {
+        TestPage99(final IConverter<?> converter, @Parameter("state") final State state) {
             fail();
         }
     }
@@ -323,6 +360,8 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPageFailOnPurpose extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
         /**
          * Test something
          */
@@ -336,12 +375,14 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPageInjectedAndPageParameters extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
         /**
          * @param converter
          */
         @Inject
-        TestPageInjectedAndPageParameters(final IConverter converter, final PageParameters params) {
-            assertEquals(0, params.size());
+        TestPageInjectedAndPageParameters(final IConverter<?> converter, final PageParameters params) {
+            assertEquals(0, params.getIndexedCount());
         }
     }
 
@@ -349,9 +390,11 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPageInjectWithParamsOnly extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
         @Inject
         TestPageInjectWithParamsOnly(final PageParameters params) {
-            assertEquals(1, params.size());
+            assertEquals(1, params.getIndexedCount());
         }
     }
 
@@ -359,6 +402,8 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPageIntOffset extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
         @Inject
         TestPageIntOffset(@Parameter(value = "offset", optional = true) final int offset) {
             assertEquals(0, offset);
@@ -369,6 +414,8 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPageNullParam extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
         TestPageNullParam(final PageParameters params) {
             assertNotNull(params);
         }
@@ -378,6 +425,8 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPageOptionalByte extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
         @Inject
         TestPageOptionalByte(@Parameter(value = "offset", optional = true) final byte offset) {
             assertEquals(0, offset);
@@ -388,8 +437,10 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPageOptionalEverything extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
         @Inject
-        TestPageOptionalEverything(final IConverter converter,
+        TestPageOptionalEverything(final IConverter<?> converter,
                 @Parameter(value = "offset", optional = true) final byte offset) {
             assertEquals(0, offset);
             assertNotNull(converter);
@@ -400,8 +451,10 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPageParamOnly extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
         TestPageParamOnly(final PageParameters params) {
-            assertEquals(2, params.size());
+            assertEquals(2, params.getIndexedCount());
             assertEquals("jolira2", params.get("company2"));
             assertEquals("jolira1", params.get("company1"));
         }
@@ -411,6 +464,8 @@ public class GuicierPageFactoryTest {
      * Test something
      */
     public static class TestPageWithComplexObject extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
         @Inject
         TestPageWithComplexObject(@Parameter("company1") final IJolira jolira) {
             assertNotNull(jolira);
@@ -421,15 +476,17 @@ public class GuicierPageFactoryTest {
      * Test uncleansed parameters
      */
     public static class TestUncleansedParams extends WebPage {
+        private static final long serialVersionUID = -3473998300532249033L;
+
         @Inject
         TestUncleansedParams(final PageParameters uncleansed, @Parameter(value = "offset") final short offset,
                 final PageParameters cleansed) {
-            assertEquals(3, uncleansed.size());
-            assertEquals(1, cleansed.size());
-            assertEquals("0", uncleansed.getString("offset"));
-            assertEquals("a", uncleansed.getString("a"));
-            assertEquals("b", uncleansed.getString("b"));
-            assertEquals("0", cleansed.getString("offset"));
+            assertEquals(3, uncleansed.getIndexedCount());
+            assertEquals(1, cleansed.getIndexedCount());
+            assertEquals("0", uncleansed.get("offset").toString());
+            assertEquals("a", uncleansed.get("a").toString());
+            assertEquals("b", uncleansed.get("b").toString());
+            assertEquals("0", cleansed.get("offset").toString());
             assertEquals(0, offset, 0);
         }
     }
@@ -475,7 +532,7 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.put("offset", "");
+        params.add("offset", "");
 
         factory.newPage(TestPageIntOffset.class, params);
     }
@@ -489,7 +546,7 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.put("state", "ON");
+        params.add("state", "ON");
 
         factory.newPage(EnumerationTestPage.class, params);
     }
@@ -503,7 +560,7 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.put("state", "0");
+        params.add("state", "0");
 
         factory.newPage(EnumerationTestPage.class, params);
     }
@@ -517,7 +574,7 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.put("state", "9");
+        params.add("state", "9");
 
         factory.newPage(EnumerationTestPage.class, params);
     }
@@ -543,9 +600,9 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.put("offset", "15");
+        params.add("offset", "15");
 
-        final Page page = factory.newPage(TestPage6.class, params);
+        final IRequestablePage page = factory.newPage(TestPage6.class, params);
 
         assertNotNull(page);
     }
@@ -559,10 +616,10 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.put("offset", "15");
-        params.put("success", "true");
+        params.add("offset", "15");
+        params.add("success", "true");
 
-        final Page page = factory.newPage(TestPage7.class, params);
+        final IRequestablePage page = factory.newPage(TestPage7.class, params);
 
         assertNotNull(page);
     }
@@ -576,10 +633,10 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.put("offset", Long.valueOf(15));
-        params.put("success", "true");
+        params.add("offset", Long.valueOf(15));
+        params.add("success", "true");
 
-        final Page page = factory.newPage(TestPage7.class, params);
+        final IRequestablePage page = factory.newPage(TestPage7.class, params);
 
         assertNotNull(page);
     }
@@ -593,10 +650,10 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.put("offset", new Long[] { Long.valueOf(15) });
-        params.put("success", "true");
+        params.add("offset", new Long[] { Long.valueOf(15) });
+        params.add("success", "true");
 
-        final Page page = factory.newPage(TestPage7.class, params);
+        final IRequestablePage page = factory.newPage(TestPage7.class, params);
 
         assertNotNull(page);
     }
@@ -615,7 +672,7 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.put("company", "jolira");
+        params.add("company", "jolira");
 
         factory.newPage(TestPage9.class, params);
     }
@@ -632,7 +689,7 @@ public class GuicierPageFactoryTest {
             }
         });
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
-        final Page page = factory.newPage(TestPage5a.class);
+        final IRequestablePage page = factory.newPage(TestPage5a.class);
 
         assertNotNull(page);
     }
@@ -651,9 +708,9 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.put("company", "jolira");
+        params.add("company", "jolira");
 
-        final Page page = factory.newPage(TestPage5.class, params);
+        final IRequestablePage page = factory.newPage(TestPage5.class, params);
 
         assertNotNull(page);
     }
@@ -672,7 +729,7 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.put("company", "<script/");
+        params.add("company", "<script/");
 
         factory.newPage(TestPage5.class, params);
     }
@@ -691,9 +748,9 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.put("company", "jolira");
+        params.add("company", "jolira");
 
-        final Page page = factory.newPage(TestPageInjectedAndPageParameters.class, params);
+        final IRequestablePage page = factory.newPage(TestPageInjectedAndPageParameters.class, params);
 
         assertNotNull(page);
     }
@@ -796,7 +853,7 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.put("company", "jolira");
+        params.add("company", "jolira");
 
         factory.newPage(TestPage0.class, params);
     }
@@ -910,9 +967,9 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.put("company", "jolira");
+        params.add("company", "jolira");
 
-        final Page page = factory.newPage(TestPageInjectWithParamsOnly.class, params);
+        final IRequestablePage page = factory.newPage(TestPageInjectWithParamsOnly.class, params);
 
         assertNotNull(page);
     }
@@ -938,10 +995,10 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.put("company1", "jolira1");
-        params.put("company2", "jolira2");
+        params.add("company1", "jolira1");
+        params.add("company2", "jolira2");
 
-        final Page page = factory.newPage(TestPageParamOnly.class, params);
+        final IRequestablePage page = factory.newPage(TestPageParamOnly.class, params);
 
         assertNotNull(page);
     }
@@ -955,9 +1012,9 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.put("company1", new Jolira());
+        params.add("company1", new Jolira());
 
-        final Page page = factory.newPage(TestPageWithComplexObject.class, params);
+        final IRequestablePage page = factory.newPage(TestPageWithComplexObject.class, params);
 
         assertNotNull(page);
     }
@@ -969,7 +1026,7 @@ public class GuicierPageFactoryTest {
     public void testPageParametersWithNull() {
         final Injector injector = Guice.createInjector();
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
-        final Page page = factory.newPage(TestPageNullParam.class);
+        final IRequestablePage page = factory.newPage(TestPageNullParam.class);
 
         assertNotNull(page);
     }
@@ -983,9 +1040,9 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.put("offset", "0");
-        params.put("a", "a");
-        params.put("b", "b");
+        params.add("offset", "0");
+        params.add("a", "a");
+        params.add("b", "b");
 
         factory.newPage(TestUncleansedParams.class, params);
     }

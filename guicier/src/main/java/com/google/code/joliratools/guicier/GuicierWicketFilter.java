@@ -52,10 +52,10 @@ public class GuicierWicketFilter extends WicketFilter {
     }
 
     @Override
-    public void init(final FilterConfig filterConfig) throws ServletException {
+    public void init(final boolean isServlet, final FilterConfig filterConfig) throws ServletException {
         final String _filterMapping = filterMapping;
 
-        super.init(new FilterConfig() {
+        super.init(isServlet, new FilterConfig() {
 
             @Override
             public String getFilterName() {

@@ -8,11 +8,8 @@ package com.google.code.joliratools.guicier;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.wicket.RequestCycle;
-import org.apache.wicket.Response;
-import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.protocol.http.WebRequest;
-import org.apache.wicket.protocol.http.WebRequestCycle;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.cycle.RequestCycleContext;
 
 import com.google.inject.Key;
 import com.google.inject.Provider;
@@ -25,27 +22,22 @@ import com.google.inject.Scope;
  * @date Sep 8, 2010 11:03:32 AM
  * @since 1.0
  */
-public class GuicierWebRequestCycle extends WebRequestCycle {
+public class GuicierWebRequestCycle extends RequestCycle {
+    /**
+     * Create a new one.
+     * 
+     * @param context
+     *            the context
+     */
+    public GuicierWebRequestCycle(final RequestCycleContext context) {
+        super(context);
+    }
+
     public static GuicierWebRequestCycle get() {
         return (GuicierWebRequestCycle) RequestCycle.get();
     }
 
     private final Map<Key<?>, Provider<?>> cachedProviders = new HashMap<Key<?>, Provider<?>>();
-
-    /**
-     * Constructor which simply passes arguments to superclass for storage there. This instance will be set as the
-     * current one for this thread.
-     * 
-     * @param application
-     *            The application
-     * @param request
-     *            The request
-     * @param response
-     *            The response
-     */
-    public GuicierWebRequestCycle(final WebApplication application, final WebRequest request, final Response response) {
-        super(application, request, response);
-    }
 
     /**
      * Create a request scoped provider.

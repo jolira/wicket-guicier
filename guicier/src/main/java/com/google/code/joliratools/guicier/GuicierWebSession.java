@@ -11,12 +11,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.wicket.Request;
-import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Session;
-import org.apache.wicket.protocol.http.WebRequest;
-import org.apache.wicket.protocol.http.WebRequestCycle;
 import org.apache.wicket.protocol.http.WebSession;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.cycle.RequestCycle;
 
 import com.google.inject.Key;
 import com.google.inject.Provider;
@@ -41,14 +39,14 @@ public class GuicierWebSession extends WebSession {
     }
 
     private static Map<Key<?>, Provider<?>> getCachedProviders() {
-        final WebRequestCycle requestCycle = (WebRequestCycle) RequestCycle.get();
-        final WebRequest webRequest = requestCycle.getWebRequest();
-        final HttpServletRequest httpServletRequest = webRequest.getHttpServletRequest();
+        final RequestCycle requestCycle = RequestCycle.get();
+        final Request webRequest = requestCycle.getRequest();
+        final HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getContainerRequest();
         final HttpSession session = httpServletRequest.getSession(true);
 
         @SuppressWarnings("unchecked")
         Map<Key<?>, Provider<?>> cachedProviders = (Map<Key<?>, Provider<?>>) session
-                .getAttribute(GUICIER_CHACHED_PROVIDERS);
+        .getAttribute(GUICIER_CHACHED_PROVIDERS);
 
         if (cachedProviders != null) {
             return cachedProviders;

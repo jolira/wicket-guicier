@@ -5,9 +5,15 @@
 
 package com.google.code.joliratools.guicier;
 
+import java.lang.reflect.Constructor;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+import javax.inject.Inject;
+
 import org.apache.wicket.IPageFactory;
-import org.apache.wicket.Page;
-import org.apache.wicket.PageParameters;
+import org.apache.wicket.request.component.IRequestablePage;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import com.google.code.joliratools.GuicierPageFactory;
 import com.google.inject.Injector;
@@ -18,13 +24,15 @@ import com.google.inject.Injector;
  * @since 1.0
  */
 abstract class GuicierPageFactoryProxy implements IPageFactory {
+    private final ConcurrentMap<String, Boolean> pageToBookmarkableCache = new ConcurrentHashMap<String, Boolean>();
+
     abstract Injector getInjector();
 
     /**
      * @see IPageFactory#newPage(Class)
      */
     @Override
-    public <C extends Page> Page newPage(final Class<C> pageClass) {
+    public <C extends IRequestablePage> IRequestablePage newPage(final Class<C> pageClass) {
         return newPage(pageClass, null);
     }
 
@@ -32,10 +40,61 @@ abstract class GuicierPageFactoryProxy implements IPageFactory {
      * @see IPageFactory#newPage(Class, PageParameters)
      */
     @Override
-    public <C extends Page> Page newPage(final Class<C> pageClass, final PageParameters parameters) {
+    public <C extends IRequestablePage> IRequestablePage newPage(final Class<C> pageClass,
+            final PageParameters parameters) {
         final Injector i = getInjector();
         final IPageFactory factory = i.getInstance(GuicierPageFactory.class);
 
         return factory.newPage(pageClass, parameters);
+    }
+
+    /**
+     * @see IPageFactory#isBookmarkable(Class)
+     */
+    @Override
+    public <C extends IRequestablePage> boolean isBookmarkable(final Class<C> pageClass) {
+        final String className = pageClass.getName();
+        final Boolean bookmarkable = pageToBookmarkableCache.get(className);
+
+        if (bookmarkable != null) {
+            return bookmarkable.booleanValue();
+        }
+
+        final boolean _bookmarkable = doIsBookmarkable(pageClass);
+        final Boolean bookmarkable_ = Boolean.valueOf(_bookmarkable);
+        pageToBookmarkableCache.put(className, bookmarkable_);
+
+        return _bookmarkable;
+    }
+
+    private <C> boolean doIsBookmarkable(final Class<C> pageClass) {
+        final Constructor<?>[] constructors = pageClass.getConstructors();
+
+        for (final Constructor<?> constructor : constructors) {
+            final Inject i1 = constructor.getAnnotation(Inject.class);
+
+            if (i1 != null) {
+                return true;
+            }
+
+            final com.google.inject.Inject i2 = constructor.getAnnotation(com.google.inject.Inject.class);
+
+            if (i2 != null) {
+                return true;
+            }
+
+            final Class<?>[] params = constructor.getParameterTypes();
+
+            switch (params.length) {
+            case 0:
+                return true;
+            case 1:
+                if (PageParameters.class.isAssignableFrom(params[0])) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
