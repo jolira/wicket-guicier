@@ -264,104 +264,104 @@ public class Guicier {
         final Class<? extends IConverter<T>> converterClass = (Class<? extends IConverter<T>>) param.converter();
 
         if (converterClass.equals(NoConverter.class)) {
-            return getDefaultConverterClass(type);
+            return (Class<? extends IConverter<T>>) getDefaultConverterClass(type);
         }
 
         return converterClass;
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> Class<? extends IConverter<T>> getDefaultConverterClass(final Class<?> type) {
+    private static <T> Class<?> getDefaultConverterClass(final Class<?> type) {
         if (String.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) StringConverter.class;
+            return StringConverter.class;
         }
 
         if (int.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) PrimitiveIntConverter.class;
+            return PrimitiveIntConverter.class;
         }
 
         if (long.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) PrimitiveLongConverter.class;
+            return PrimitiveLongConverter.class;
         }
 
         if (short.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) PrimitiveShortConverter.class;
+            return PrimitiveShortConverter.class;
         }
 
         if (float.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) PrimitiveFloatConverter.class;
+            return PrimitiveFloatConverter.class;
         }
 
         if (double.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) PrimitiveDoubleConverter.class;
+            return PrimitiveDoubleConverter.class;
         }
 
         if (boolean.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) PrimitiveBooleanConverter.class;
+            return PrimitiveBooleanConverter.class;
         }
 
         if (byte.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) PrimitiveByteConverter.class;
+            return PrimitiveByteConverter.class;
         }
 
         if (char.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) PrimitiveCharConverter.class;
+            return PrimitiveCharConverter.class;
         }
 
         if (Character.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) CharacterConverter.class;
+            return CharacterConverter.class;
         }
 
         if (Integer.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) IntegerConverter.class;
+            return IntegerConverter.class;
         }
 
         if (Long.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) LongConverter.class;
+            return LongConverter.class;
         }
 
         if (Short.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) ShortConverter.class;
+            return ShortConverter.class;
         }
 
         if (Float.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) FloatConverter.class;
+            return FloatConverter.class;
         }
 
         if (Double.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) DoubleConverter.class;
+            return DoubleConverter.class;
         }
 
         if (Boolean.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) BooleanConverter.class;
+            return BooleanConverter.class;
         }
 
         if (Byte.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) ByteConverter.class;
+            return ByteConverter.class;
         }
 
         if (Character.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) CharacterConverter.class;
+            return CharacterConverter.class;
         }
 
         if (Date.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) DateConverter.class;
+            return DateConverter.class;
         }
 
         if (java.sql.Date.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) SqlDateConverter.class;
+            return SqlDateConverter.class;
         }
 
         if (java.sql.Time.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) SqlTimeConverter.class;
+            return SqlTimeConverter.class;
         }
 
         if (java.sql.Timestamp.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) SqlTimestampConverter.class;
+            return SqlTimestampConverter.class;
         }
 
         if (BigDecimal.class.equals(type)) {
-            return (Class<? extends IConverter<T>>) BigDecimalConverter.class;
+            return BigDecimalConverter.class;
         }
 
         return null;
