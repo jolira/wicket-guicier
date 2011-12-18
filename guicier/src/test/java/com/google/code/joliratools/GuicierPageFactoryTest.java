@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
@@ -30,6 +31,7 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
@@ -187,7 +189,6 @@ public class GuicierPageFactoryTest {
     public static class TestPage16 extends WebPage {
         private static final long serialVersionUID = -3473998300532249033L;
 
-
         @Inject
         TestPage16(@Parameter(value = "offset", optional = true) final long offset) {
             assertEquals(0, offset);
@@ -304,8 +305,8 @@ public class GuicierPageFactoryTest {
             assertEquals(Boolean.TRUE, Boolean.valueOf(success1));
             assertEquals(Byte.valueOf((byte) 15), offset14);
             assertEquals(Byte.valueOf((byte) 15), Byte.valueOf(offset13));
-            assertEquals(2, params.getIndexedCount());
-            assertEquals("true", params.get("success"));
+            assertEquals(2, params.getAllNamed().size());
+            assertTrue(params.get("success").toBoolean());
         }
     }
 
@@ -382,7 +383,7 @@ public class GuicierPageFactoryTest {
          */
         @Inject
         TestPageInjectedAndPageParameters(final IConverter<?> converter, final PageParameters params) {
-            assertEquals(0, params.getIndexedCount());
+            assertEquals(0, params.getNamedKeys().size());
         }
     }
 
@@ -394,7 +395,7 @@ public class GuicierPageFactoryTest {
 
         @Inject
         TestPageInjectWithParamsOnly(final PageParameters params) {
-            assertEquals(1, params.getIndexedCount());
+            assertEquals(1, params.getNamedKeys().size());
         }
     }
 
@@ -454,21 +455,9 @@ public class GuicierPageFactoryTest {
         private static final long serialVersionUID = -3473998300532249033L;
 
         TestPageParamOnly(final PageParameters params) {
-            assertEquals(2, params.getIndexedCount());
-            assertEquals("jolira2", params.get("company2"));
-            assertEquals("jolira1", params.get("company1"));
-        }
-    }
-
-    /**
-     * Test something
-     */
-    public static class TestPageWithComplexObject extends WebPage {
-        private static final long serialVersionUID = -3473998300532249033L;
-
-        @Inject
-        TestPageWithComplexObject(@Parameter("company1") final IJolira jolira) {
-            assertNotNull(jolira);
+            assertEquals(2, params.getNamedKeys().size());
+            assertEquals("jolira2", params.get("company2").toString());
+            assertEquals("jolira1", params.get("company1").toString());
         }
     }
 
@@ -481,8 +470,8 @@ public class GuicierPageFactoryTest {
         @Inject
         TestUncleansedParams(final PageParameters uncleansed, @Parameter(value = "offset") final short offset,
                 final PageParameters cleansed) {
-            assertEquals(3, uncleansed.getIndexedCount());
-            assertEquals(1, cleansed.getIndexedCount());
+            assertEquals(3, uncleansed.getNamedKeys().size());
+            assertEquals(1, cleansed.getNamedKeys().size());
             assertEquals("0", uncleansed.get("offset").toString());
             assertEquals("a", uncleansed.get("a").toString());
             assertEquals("b", uncleansed.get("b").toString());
@@ -490,6 +479,9 @@ public class GuicierPageFactoryTest {
             assertEquals(0, offset, 0);
         }
     }
+
+    private static final TypeLiteral<IConverter<?>> CONVERTER_TYPE_LITERAL = new TypeLiteral<IConverter<?>>() {
+    };
 
     /**
      * @param <T>
@@ -593,6 +585,25 @@ public class GuicierPageFactoryTest {
     /**
      * Test something
      */
+    @Test(expected = IllegalArgumentException.class)
+    public void testInjectedAndOneIllegalParameter() {
+        final Injector injector = Guice.createInjector(new Module() {
+            @Override
+            public void configure(final Binder binder) {
+                binder.bind(CONVERTER_TYPE_LITERAL).to(IntegerConverter.class);
+            }
+        });
+        final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
+        final PageParameters params = new PageParameters();
+
+        params.add("company", "<script/");
+
+        factory.newPage(TestPage5.class, params);
+    }
+
+    /**
+     * Test something
+     */
     @Test
     public void testInjectedAndOneIntParameter() {
         assertNotNull(tester); // make findbugs happy
@@ -650,7 +661,7 @@ public class GuicierPageFactoryTest {
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
         final PageParameters params = new PageParameters();
 
-        params.add("offset", new Long[] { Long.valueOf(15) });
+        params.add("offset", "15");
         params.add("success", "true");
 
         final IRequestablePage page = factory.newPage(TestPage7.class, params);
@@ -666,7 +677,7 @@ public class GuicierPageFactoryTest {
         final Injector injector = Guice.createInjector(new Module() {
             @Override
             public void configure(final Binder binder) {
-                binder.bind(IConverter.class).annotatedWith(Names.named("jfk")).to(IntegerConverter.class);
+                binder.bind(CONVERTER_TYPE_LITERAL).annotatedWith(Names.named("jfk")).to(IntegerConverter.class);
             }
         });
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
@@ -685,7 +696,7 @@ public class GuicierPageFactoryTest {
         final Injector injector = Guice.createInjector(new Module() {
             @Override
             public void configure(final Binder binder) {
-                binder.bind(IConverter.class).to(IntegerConverter.class);
+                binder.bind(CONVERTER_TYPE_LITERAL).to(IntegerConverter.class);
             }
         });
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
@@ -702,7 +713,7 @@ public class GuicierPageFactoryTest {
         final Injector injector = Guice.createInjector(new Module() {
             @Override
             public void configure(final Binder binder) {
-                binder.bind(IConverter.class).to(IntegerConverter.class);
+                binder.bind(CONVERTER_TYPE_LITERAL).to(IntegerConverter.class);
             }
         });
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
@@ -718,31 +729,12 @@ public class GuicierPageFactoryTest {
     /**
      * Test something
      */
-    @Test(expected=IllegalArgumentException.class)
-    public void testInjectedAndOneIllegalParameter() {
-        final Injector injector = Guice.createInjector(new Module() {
-            @Override
-            public void configure(final Binder binder) {
-                binder.bind(IConverter.class).to(IntegerConverter.class);
-            }
-        });
-        final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
-        final PageParameters params = new PageParameters();
-
-        params.add("company", "<script/");
-
-        factory.newPage(TestPage5.class, params);
-    }
-
-    /**
-     * Test something
-     */
     @Test
     public void testInjectedAndPageParameters() {
         final Injector injector = Guice.createInjector(new Module() {
             @Override
             public void configure(final Binder binder) {
-                binder.bind(IConverter.class).to(IntegerConverter.class);
+                binder.bind(CONVERTER_TYPE_LITERAL).to(IntegerConverter.class);
             }
         });
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
@@ -793,7 +785,7 @@ public class GuicierPageFactoryTest {
         final Injector injector = Guice.createInjector(new Module() {
             @Override
             public void configure(final Binder binder) {
-                binder.bind(IConverter.class).to(IntegerConverter.class);
+                binder.bind(CONVERTER_TYPE_LITERAL).to(IntegerConverter.class);
             }
         });
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
@@ -831,7 +823,7 @@ public class GuicierPageFactoryTest {
         final Injector injector = Guice.createInjector(new Module() {
             @Override
             public void configure(final Binder binder) {
-                binder.bind(IConverter.class).to(IntegerConverter.class);
+                binder.bind(CONVERTER_TYPE_LITERAL).to(IntegerConverter.class);
             }
         });
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
@@ -847,7 +839,7 @@ public class GuicierPageFactoryTest {
         final Injector injector = Guice.createInjector(new Module() {
             @Override
             public void configure(final Binder binder) {
-                binder.bind(IConverter.class).to(IntegerConverter.class);
+                binder.bind(CONVERTER_TYPE_LITERAL).to(IntegerConverter.class);
             }
         });
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
@@ -866,7 +858,7 @@ public class GuicierPageFactoryTest {
         final Injector injector = Guice.createInjector(new Module() {
             @Override
             public void configure(final Binder binder) {
-                binder.bind(IConverter.class).to(IntegerConverter.class);
+                binder.bind(CONVERTER_TYPE_LITERAL).to(IntegerConverter.class);
             }
         });
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
@@ -911,7 +903,7 @@ public class GuicierPageFactoryTest {
         final Injector injector = Guice.createInjector(new Module() {
             @Override
             public void configure(final Binder binder) {
-                binder.bind(IConverter.class).to(IntegerConverter.class);
+                binder.bind(CONVERTER_TYPE_LITERAL).to(IntegerConverter.class);
             }
         });
         final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
@@ -999,22 +991,6 @@ public class GuicierPageFactoryTest {
         params.add("company2", "jolira2");
 
         final IRequestablePage page = factory.newPage(TestPageParamOnly.class, params);
-
-        assertNotNull(page);
-    }
-
-    /**
-     * Test something
-     */
-    @Test
-    public void testPageParametersWithAnComplexObject() {
-        final Injector injector = Guice.createInjector();
-        final GuicierPageFactory factory = injector.getInstance(GuicierPageFactory.class);
-        final PageParameters params = new PageParameters();
-
-        params.add("company1", new Jolira());
-
-        final IRequestablePage page = factory.newPage(TestPageWithComplexObject.class, params);
 
         assertNotNull(page);
     }

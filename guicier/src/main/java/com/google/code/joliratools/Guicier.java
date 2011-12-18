@@ -244,7 +244,7 @@ public class Guicier {
 
     private static String[] get(@Nullable final PageParameters parameters, final String key) {
         if (parameters == null) {
-            return null;
+            return new String[0];
         }
 
         final Collection<StringValue> values = parameters.getValues(key);
@@ -396,10 +396,12 @@ public class Guicier {
             return getNullValue(type);
         }
 
+        cleansed.remove(key);
         for (final String _param : value) {
             verifyString(param, _param);
             cleansed.add(key, _param);
         }
+
 
         final Class<?> componentType = type.getComponentType();
 
