@@ -402,7 +402,6 @@ public class Guicier {
             cleansed.add(key, _param);
         }
 
-
         final Class<?> componentType = type.getComponentType();
 
         if (!type.isArray()) {

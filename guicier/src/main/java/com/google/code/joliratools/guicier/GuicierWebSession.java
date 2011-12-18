@@ -46,7 +46,7 @@ public class GuicierWebSession extends WebSession {
 
         @SuppressWarnings("unchecked")
         Map<Key<?>, Provider<?>> cachedProviders = (Map<Key<?>, Provider<?>>) session
-        .getAttribute(GUICIER_CHACHED_PROVIDERS);
+                .getAttribute(GUICIER_CHACHED_PROVIDERS);
 
         if (cachedProviders != null) {
             return cachedProviders;

@@ -18,8 +18,8 @@ import org.apache.wicket.protocol.http.IWebApplicationFactory;
 import org.apache.wicket.protocol.http.WicketFilter;
 
 /**
- * Create a wicket filter. The filter deals with the fact that wicket has to know the primary filter mapping and set the
- * factory.
+ * Create a wicket filter. The filter deals with the fact that wicket has to
+ * know the primary filter mapping and set the factory.
  * 
  * @author jfk
  * @date Aug 2, 2011 7:14:13 AM

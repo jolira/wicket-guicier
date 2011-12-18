@@ -16,13 +16,20 @@ import com.google.inject.Provider;
 import com.google.inject.Scope;
 
 /**
- * Just like its superclass, but can store scoped values that are {@link RequestScoped}.
+ * Just like its superclass, but can store scoped values that are
+ * {@link RequestScoped}.
  * 
  * @author jfk
  * @date Sep 8, 2010 11:03:32 AM
  * @since 1.0
  */
 public class GuicierWebRequestCycle extends RequestCycle {
+    public static GuicierWebRequestCycle get() {
+        return (GuicierWebRequestCycle) RequestCycle.get();
+    }
+
+    private final Map<Key<?>, Provider<?>> cachedProviders = new HashMap<Key<?>, Provider<?>>();
+
     /**
      * Create a new one.
      * 
@@ -32,12 +39,6 @@ public class GuicierWebRequestCycle extends RequestCycle {
     public GuicierWebRequestCycle(final RequestCycleContext context) {
         super(context);
     }
-
-    public static GuicierWebRequestCycle get() {
-        return (GuicierWebRequestCycle) RequestCycle.get();
-    }
-
-    private final Map<Key<?>, Provider<?>> cachedProviders = new HashMap<Key<?>, Provider<?>>();
 
     /**
      * Create a request scoped provider.

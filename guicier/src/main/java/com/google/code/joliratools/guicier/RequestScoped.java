@@ -15,7 +15,8 @@ import java.lang.annotation.Target;
 import com.google.inject.ScopeAnnotation;
 
 /**
- * This is a customized scope for Guice. Any type annotated using this scope will be available throughout one request.
+ * This is a customized scope for Guice. Any type annotated using this scope
+ * will be available throughout one request.
  * 
  * @author jfk
  * @date Sep 7, 2010 2:15:51 PM

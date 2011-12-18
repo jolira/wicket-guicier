@@ -171,7 +171,8 @@ public class GuicierTest {
     }
 
     /**
-     * Test method for Guicier#get(PageParameters, Parameter, Class, PageParameters).
+     * Test method for Guicier#get(PageParameters, Parameter, Class,
+     * PageParameters).
      */
     @Test
     public void testGetPageParameters() {

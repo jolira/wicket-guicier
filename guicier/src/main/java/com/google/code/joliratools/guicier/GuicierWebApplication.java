@@ -53,7 +53,8 @@ public abstract class GuicierWebApplication extends WebApplication {
     }
 
     /**
-     * Installs the {@link GuicierPageFactory} and a customized {@link IComponentInstantiationListener}.
+     * Installs the {@link GuicierPageFactory} and a customized
+     * {@link IComponentInstantiationListener}.
      * 
      * @see WebApplication#init()
      */
@@ -91,8 +92,7 @@ public abstract class GuicierWebApplication extends WebApplication {
     }
 
     /**
-    /**
-     * Creates a {@link GuicierWebSession}.
+     * /** Creates a {@link GuicierWebSession}.
      * 
      * @see WebApplication#newSession(Request, Response)
      */

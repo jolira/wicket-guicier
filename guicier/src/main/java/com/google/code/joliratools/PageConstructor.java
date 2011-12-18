@@ -18,6 +18,16 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 
 final class PageConstructor {
+    private static boolean contains(final PageParameters parameters, final String name) {
+        if (parameters == null) {
+            return false;
+        }
+
+        final Collection<StringValue> values = parameters.getValues(name);
+
+        return !values.isEmpty();
+    }
+
     static PageConstructor get(final Injector injector, final Constructor<Page> constructor) {
         final Annotation[][] paramAnnotations = constructor.getParameterAnnotations();
         int paramCount = 0;
@@ -135,16 +145,6 @@ final class PageConstructor {
         }
 
         return count;
-    }
-
-    private static boolean contains(final PageParameters parameters, final String name) {
-        if (parameters == null) {
-            return false;
-        }
-
-        final Collection<StringValue> values = parameters.getValues(name);
-
-        return !values.isEmpty();
     }
 
     boolean isDefault() {

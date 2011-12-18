@@ -68,8 +68,10 @@ public abstract class GuicierServletConfig extends GuiceServletContextListener {
     }
 
     /**
-     * Provides access to the request scoped provider. Accesses the request cycle and tries to retrieve values from the
-     * {@link GuicierWebRequestCycle}. Ha to be overridden if we are not using this type of cycle.
+     * Provides access to the request scoped provider. Accesses the request
+     * cycle and tries to retrieve values from the
+     * {@link GuicierWebRequestCycle}. Ha to be overridden if we are not using
+     * this type of cycle.
      * 
      * @param <T>
      *            the type of the requested object.
@@ -98,8 +100,10 @@ public abstract class GuicierServletConfig extends GuiceServletContextListener {
     }
 
     /**
-     * Provides access to the session scoped provider. Accesses the request cycle and tries to retrieve values from the
-     * {@link GuicierWebRequestCycle}. Ha to be overridden if we are not using this type of cycle.
+     * Provides access to the session scoped provider. Accesses the request
+     * cycle and tries to retrieve values from the
+     * {@link GuicierWebRequestCycle}. Ha to be overridden if we are not using
+     * this type of cycle.
      * 
      * @param <T>
      *            the type of the requested object.

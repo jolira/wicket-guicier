@@ -26,47 +26,6 @@ import com.google.inject.Injector;
 abstract class GuicierPageFactoryProxy implements IPageFactory {
     private final ConcurrentMap<String, Boolean> pageToBookmarkableCache = new ConcurrentHashMap<String, Boolean>();
 
-    abstract Injector getInjector();
-
-    /**
-     * @see IPageFactory#newPage(Class)
-     */
-    @Override
-    public <C extends IRequestablePage> IRequestablePage newPage(final Class<C> pageClass) {
-        return newPage(pageClass, null);
-    }
-
-    /**
-     * @see IPageFactory#newPage(Class, PageParameters)
-     */
-    @Override
-    public <C extends IRequestablePage> IRequestablePage newPage(final Class<C> pageClass,
-            final PageParameters parameters) {
-        final Injector i = getInjector();
-        final IPageFactory factory = i.getInstance(GuicierPageFactory.class);
-
-        return factory.newPage(pageClass, parameters);
-    }
-
-    /**
-     * @see IPageFactory#isBookmarkable(Class)
-     */
-    @Override
-    public <C extends IRequestablePage> boolean isBookmarkable(final Class<C> pageClass) {
-        final String className = pageClass.getName();
-        final Boolean bookmarkable = pageToBookmarkableCache.get(className);
-
-        if (bookmarkable != null) {
-            return bookmarkable.booleanValue();
-        }
-
-        final boolean _bookmarkable = doIsBookmarkable(pageClass);
-        final Boolean bookmarkable_ = Boolean.valueOf(_bookmarkable);
-        pageToBookmarkableCache.put(className, bookmarkable_);
-
-        return _bookmarkable;
-    }
-
     private <C> boolean doIsBookmarkable(final Class<C> pageClass) {
         final Constructor<?>[] constructors = pageClass.getConstructors();
 
@@ -96,5 +55,46 @@ abstract class GuicierPageFactoryProxy implements IPageFactory {
         }
 
         return false;
+    }
+
+    abstract Injector getInjector();
+
+    /**
+     * @see IPageFactory#isBookmarkable(Class)
+     */
+    @Override
+    public <C extends IRequestablePage> boolean isBookmarkable(final Class<C> pageClass) {
+        final String className = pageClass.getName();
+        final Boolean bookmarkable = pageToBookmarkableCache.get(className);
+
+        if (bookmarkable != null) {
+            return bookmarkable.booleanValue();
+        }
+
+        final boolean _bookmarkable = doIsBookmarkable(pageClass);
+        final Boolean bookmarkable_ = Boolean.valueOf(_bookmarkable);
+        pageToBookmarkableCache.put(className, bookmarkable_);
+
+        return _bookmarkable;
+    }
+
+    /**
+     * @see IPageFactory#newPage(Class)
+     */
+    @Override
+    public <C extends IRequestablePage> IRequestablePage newPage(final Class<C> pageClass) {
+        return newPage(pageClass, null);
+    }
+
+    /**
+     * @see IPageFactory#newPage(Class, PageParameters)
+     */
+    @Override
+    public <C extends IRequestablePage> IRequestablePage newPage(final Class<C> pageClass,
+            final PageParameters parameters) {
+        final Injector i = getInjector();
+        final IPageFactory factory = i.getInstance(GuicierPageFactory.class);
+
+        return factory.newPage(pageClass, parameters);
     }
 }
